@@ -2,354 +2,400 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
- * Onboarding - Full-screen motion onboarding for new users
- * Shows 3 illustration-driven screens with parallax motion
+ * Onboarding - Premium full-screen motion onboarding
+ * Shows 3 visually rich animated screens:
+ * 1. Beach/Travel Theme
+ * 2. Food/Dining Theme
+ * 3. Sky/Airplane Theme
  */
 
 const screens = [
     {
         id: 1,
-        title: "Track Shared Expenses",
-        subtitle: "Split bills on trips, dinners, and everyday costs with friends",
-        gradient: "linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #8b5cf6 100%)",
-        illustration: "travel"
+        title: "Trips made simple",
+        subtitle: "Split expenses on vacations and adventures with friends",
+        gradient: "linear-gradient(180deg, #87CEEB 0%, #4A90D9 50%, #1E5AA8 100%)",
+        illustration: "beach"
     },
     {
         id: 2,
-        title: "Smart Expense Categories",
-        subtitle: "Auto-detect food, transport, entertainment and more",
-        gradient: "linear-gradient(135deg, #f97316 0%, #ef4444 50%, #ec4899 100%)",
+        title: "Split food expenses effortlessly",
+        subtitle: "Dinners, lunches, and late-night cravings — all covered",
+        gradient: "linear-gradient(180deg, #FF9A56 0%, #FF6B6B 50%, #EE4266 100%)",
         illustration: "food"
     },
     {
         id: 3,
-        title: "Settle Up Instantly",
-        subtitle: "See who owes what and settle balances with one tap",
-        gradient: "linear-gradient(135deg, #10b981 0%, #14b8a6 50%, #06b6d4 100%)",
-        illustration: "settle"
+        title: "Settle up, stress-free",
+        subtitle: "Track balances and close out trips with ease",
+        gradient: "linear-gradient(180deg, #E0F4FF 0%, #87CEEB 40%, #4A90D9 100%)",
+        illustration: "sky"
     }
 ];
 
-// SVG Illustrations
-const TravelIllustration = () => (
-    <svg viewBox="0 0 400 300" className="onboarding-illustration">
-        {/* Sky gradient background */}
-        <defs>
-            <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#87CEEB" />
-                <stop offset="100%" stopColor="#E0F7FF" />
-            </linearGradient>
-        </defs>
-
-        {/* Sun */}
+// ==========================================
+// SCREEN 1: BEACH / TRAVEL THEME
+// ==========================================
+const BeachIllustration = () => (
+    <svg viewBox="0 0 400 320" className="onboarding-illustration">
+        {/* Sun with glow */}
         <motion.circle
-            cx="320" cy="60" r="40"
-            fill="#FFD700"
-            initial={{ scale: 0.8, opacity: 0.7 }}
-            animate={{ scale: [0.8, 1, 0.8], opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.circle
-            cx="320" cy="60" r="50"
-            fill="#FFD700"
-            opacity="0.3"
+            cx="320" cy="50" r="35"
+            fill="#FFD93D"
             initial={{ scale: 0.9 }}
-            animate={{ scale: [0.9, 1.2, 0.9] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ scale: [0.9, 1.05, 0.9] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.circle
+            cx="320" cy="50" r="50"
+            fill="#FFD93D"
+            opacity="0.3"
+            initial={{ scale: 0.95 }}
+            animate={{ scale: [0.95, 1.15, 0.95] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        {/* Clouds - parallax effect */}
+        {/* Floating clouds with parallax */}
         <motion.g
-            initial={{ x: -50 }}
-            animate={{ x: 50 }}
-            transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+            initial={{ x: -30 }}
+            animate={{ x: 30 }}
+            transition={{ duration: 8, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
         >
-            <ellipse cx="80" cy="80" rx="40" ry="20" fill="white" opacity="0.9" />
-            <ellipse cx="110" cy="80" rx="30" ry="18" fill="white" opacity="0.9" />
-            <ellipse cx="60" cy="85" rx="25" ry="15" fill="white" opacity="0.9" />
+            <ellipse cx="80" cy="60" rx="35" ry="18" fill="white" opacity="0.95" />
+            <ellipse cx="110" cy="55" rx="28" ry="15" fill="white" opacity="0.95" />
+            <ellipse cx="55" cy="65" rx="22" ry="12" fill="white" opacity="0.95" />
         </motion.g>
 
         <motion.g
-            initial={{ x: 30 }}
-            animate={{ x: -30 }}
-            transition={{ duration: 15, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+            initial={{ x: 20 }}
+            animate={{ x: -20 }}
+            transition={{ duration: 10, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
         >
-            <ellipse cx="250" cy="50" rx="35" ry="18" fill="white" opacity="0.8" />
-            <ellipse cx="280" cy="55" rx="28" ry="14" fill="white" opacity="0.8" />
+            <ellipse cx="240" cy="40" rx="30" ry="15" fill="white" opacity="0.85" />
+            <ellipse cx="265" cy="45" rx="22" ry="12" fill="white" opacity="0.85" />
         </motion.g>
 
-        {/* Airplane */}
-        <motion.g
-            initial={{ x: -100, y: 20 }}
-            animate={{ x: 450, y: -30 }}
-            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-        >
-            <path
-                d="M0 15 L35 15 L40 8 L45 15 L55 15 L50 20 L55 25 L45 25 L40 32 L35 25 L0 25 L5 20 Z"
-                fill="#2563eb"
-            />
-            {/* Contrail */}
-            <motion.line
-                x1="-60" y1="20" x2="0" y2="20"
-                stroke="white"
-                strokeWidth="2"
-                opacity="0.6"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 1 }}
-            />
-        </motion.g>
-
-        {/* Beach/Mountains */}
-        <path d="M0 200 Q100 160 200 190 T400 180 L400 300 L0 300 Z" fill="#f4d03f" />
-        <path d="M0 220 Q80 200 150 220 T300 210 T400 220 L400 300 L0 300 Z" fill="#e9c46a" />
-
-        {/* Palm tree */}
-        <rect x="60" y="180" width="8" height="70" fill="#8B4513" />
-        <motion.g
-            animate={{ rotate: [-5, 5, -5] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformOrigin: "64px 180px" }}
-        >
-            <path d="M64 180 Q40 160 20 170" stroke="#228B22" strokeWidth="8" fill="none" strokeLinecap="round" />
-            <path d="M64 180 Q50 150 30 150" stroke="#228B22" strokeWidth="7" fill="none" strokeLinecap="round" />
-            <path d="M64 180 Q80 150 100 155" stroke="#228B22" strokeWidth="7" fill="none" strokeLinecap="round" />
-            <path d="M64 180 Q90 160 110 170" stroke="#228B22" strokeWidth="8" fill="none" strokeLinecap="round" />
-        </motion.g>
-
-        {/* Ocean waves */}
+        {/* Ocean waves - animated */}
         <motion.path
-            d="M0 250 Q50 240 100 250 T200 250 T300 250 T400 250 L400 300 L0 300 Z"
-            fill="#0ea5e9"
+            d="M0 220 Q50 205 100 220 T200 220 T300 220 T400 220 L400 320 L0 320 Z"
+            fill="#1E88E5"
             animate={{
                 d: [
-                    "M0 250 Q50 240 100 250 T200 250 T300 250 T400 250 L400 300 L0 300 Z",
-                    "M0 250 Q50 260 100 250 T200 250 T300 250 T400 250 L400 300 L0 300 Z"
+                    "M0 220 Q50 205 100 220 T200 220 T300 220 T400 220 L400 320 L0 320 Z",
+                    "M0 220 Q50 235 100 220 T200 220 T300 220 T400 220 L400 320 L0 320 Z"
                 ]
             }}
-            transition={{ duration: 2, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
+            transition={{ duration: 2.5, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
         />
-    </svg>
-);
+        <motion.path
+            d="M0 235 Q60 220 120 235 T240 235 T360 235 T400 235 L400 320 L0 320 Z"
+            fill="#2196F3"
+            animate={{
+                d: [
+                    "M0 235 Q60 220 120 235 T240 235 T360 235 T400 235 L400 320 L0 320 Z",
+                    "M0 235 Q60 250 120 235 T240 235 T360 235 T400 235 L400 320 L0 320 Z"
+                ]
+            }}
+            transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
+        />
 
-const FoodIllustration = () => (
-    <svg viewBox="0 0 400 300" className="onboarding-illustration">
-        {/* Table */}
-        <ellipse cx="200" cy="260" rx="180" ry="30" fill="#8B4513" opacity="0.8" />
-        <rect x="20" y="230" width="360" height="30" fill="#A0522D" rx="5" />
+        {/* Beach / Sand */}
+        <path d="M0 260 Q100 250 200 260 T400 255 L400 320 L0 320 Z" fill="#F4D03F" />
+        <path d="M0 275 Q80 268 150 275 T320 272 T400 275 L400 320 L0 320 Z" fill="#E9C46A" />
 
-        {/* Plate */}
-        <ellipse cx="200" cy="180" rx="90" ry="45" fill="#ffffff" />
-        <ellipse cx="200" cy="180" rx="80" ry="38" fill="#f8f8f8" />
-        <ellipse cx="200" cy="180" rx="70" ry="32" fill="#fff" />
+        {/* Palm tree with gentle sway */}
+        <rect x="70" y="175" width="10" height="85" rx="3" fill="#8B4513" />
+        <motion.g
+            animate={{ rotate: [-3, 3, -3] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            style={{ transformOrigin: "75px 180px" }}
+        >
+            <path d="M75 180 Q45 155 20 165" stroke="#228B22" strokeWidth="10" fill="none" strokeLinecap="round" />
+            <path d="M75 180 Q50 145 25 140" stroke="#2E7D32" strokeWidth="9" fill="none" strokeLinecap="round" />
+            <path d="M75 180 Q85 145 115 145" stroke="#2E7D32" strokeWidth="9" fill="none" strokeLinecap="round" />
+            <path d="M75 180 Q100 155 130 165" stroke="#228B22" strokeWidth="10" fill="none" strokeLinecap="round" />
+            <path d="M75 180 Q75 150 75 130" stroke="#43A047" strokeWidth="7" fill="none" strokeLinecap="round" />
+        </motion.g>
 
-        {/* Food items floating */}
+        {/* Floating beach ball */}
         <motion.g
             initial={{ y: 0 }}
             animate={{ y: [-5, 5, -5] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
-            {/* Pizza slice */}
-            <motion.g
-                initial={{ rotate: -10 }}
-                animate={{ rotate: [-10, 10, -10] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                style={{ transformOrigin: "80px 100px" }}
-            >
-                <path d="M50 120 L80 60 L110 120 Z" fill="#FFD93D" />
-                <circle cx="70" cy="100" r="6" fill="#DC2626" />
-                <circle cx="90" cy="95" r="5" fill="#DC2626" />
-                <circle cx="80" cy="110" r="5" fill="#228B22" />
-            </motion.g>
+            <circle cx="300" cy="250" r="18" fill="#FF6B6B" />
+            <path d="M283 250 Q300 235 318 250" fill="#FFD93D" />
+            <path d="M283 250 Q300 265 318 250" fill="#4ECDC4" />
+            <circle cx="300" cy="250" r="18" fill="none" stroke="white" strokeWidth="2" />
         </motion.g>
 
-        {/* Burger */}
+        {/* Floating suitcase */}
         <motion.g
-            initial={{ y: 0 }}
-            animate={{ y: [-8, 2, -8] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-        >
-            <ellipse cx="320" cy="120" rx="35" ry="15" fill="#D2691E" />
-            <rect x="285" y="105" width="70" height="15" fill="#228B22" />
-            <rect x="288" y="95" width="64" height="12" fill="#8B4513" />
-            <rect x="285" y="85" width="70" height="12" fill="#FFD700" />
-            <ellipse cx="320" cy="85" rx="35" ry="12" fill="#DEB887" />
-        </motion.g>
-
-        {/* Coffee cup */}
-        <motion.g
-            initial={{ y: 0 }}
-            animate={{ y: [-3, 6, -3] }}
-            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-        >
-            <rect x="130" y="85" width="45" height="60" rx="5" fill="#ffffff" />
-            <rect x="135" y="90" width="35" height="10" fill="#6B4423" />
-            {/* Steam */}
-            <motion.path
-                d="M145 75 Q148 65 145 55"
-                stroke="#ddd"
-                strokeWidth="2"
-                fill="none"
-                initial={{ opacity: 0.3 }}
-                animate={{ opacity: [0.3, 0.8, 0.3], y: [0, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-            />
-            <motion.path
-                d="M160 78 Q163 68 160 58"
-                stroke="#ddd"
-                strokeWidth="2"
-                fill="none"
-                initial={{ opacity: 0.5 }}
-                animate={{ opacity: [0.5, 1, 0.5], y: [0, -8, 0] }}
-                transition={{ duration: 2.3, repeat: Infinity }}
-            />
-        </motion.g>
-
-        {/* Receipt/Bill floating */}
-        <motion.g
-            initial={{ rotate: 15, y: 0 }}
-            animate={{ rotate: [15, 20, 15], y: [-5, 5, -5] }}
+            initial={{ y: 0, rotate: -5 }}
+            animate={{ y: [-3, 3, -3], rotate: [-5, 0, -5] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformOrigin: "340px 200px" }}
         >
-            <rect x="310" y="170" width="60" height="80" fill="white" rx="3" />
-            <line x1="320" y1="185" x2="360" y2="185" stroke="#ddd" strokeWidth="2" />
-            <line x1="320" y1="200" x2="355" y2="200" stroke="#ddd" strokeWidth="2" />
-            <line x1="320" y1="215" x2="350" y2="215" stroke="#ddd" strokeWidth="2" />
-            <line x1="320" y1="235" x2="360" y2="235" stroke="#10b981" strokeWidth="3" />
+            <rect x="340" y="230" width="40" height="30" rx="4" fill="#E74C3C" />
+            <rect x="340" y="230" width="40" height="8" rx="2" fill="#C0392B" />
+            <rect x="355" y="223" width="10" height="8" rx="2" fill="#7F8C8D" />
+            <line x1="350" y1="245" x2="370" y2="245" stroke="#C0392B" strokeWidth="2" />
         </motion.g>
-
-        {/* Floating coins */}
-        <motion.circle
-            cx="50" cy="150"
-            r="15"
-            fill="#FFD700"
-            stroke="#DAA520"
-            strokeWidth="2"
-            initial={{ y: 0, rotate: 0 }}
-            animate={{ y: [-10, 10, -10], rotate: [0, 360] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.text x="45" y="155" fontSize="12" fill="#DAA520" fontWeight="bold">₹</motion.text>
     </svg>
 );
 
-const SettleIllustration = () => (
-    <svg viewBox="0 0 400 300" className="onboarding-illustration">
-        {/* Background circle */}
-        <circle cx="200" cy="150" r="120" fill="#10b981" opacity="0.1" />
+// ==========================================
+// SCREEN 2: FOOD / DINING THEME
+// ==========================================
+const FoodIllustration = () => (
+    <svg viewBox="0 0 400 320" className="onboarding-illustration">
+        {/* Table */}
+        <ellipse cx="200" cy="290" rx="180" ry="25" fill="#8B4513" opacity="0.6" />
+        <path d="M30 260 Q200 280 370 260 L370 280 Q200 295 30 280 Z" fill="#A0522D" />
 
-        {/* People */}
-        {/* Person 1 */}
+        {/* Main plate with pizza */}
         <motion.g
-            initial={{ x: 0 }}
-            animate={{ x: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            initial={{ scale: 0.95, y: 0 }}
+            animate={{ scale: [0.95, 1, 0.95], y: [-2, 2, -2] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         >
-            <circle cx="100" cy="100" r="25" fill="#6366f1" />
-            <circle cx="100" cy="100" r="20" fill="#818cf8" />
-            {/* Face */}
-            <circle cx="93" cy="95" r="3" fill="white" />
-            <circle cx="107" cy="95" r="3" fill="white" />
-            <path d="M92 108 Q100 115 108 108" stroke="white" strokeWidth="2" fill="none" />
-            {/* Body */}
-            <path d="M75 130 Q100 150 125 130" stroke="#6366f1" strokeWidth="15" fill="none" />
+            {/* Plate */}
+            <ellipse cx="200" cy="180" rx="100" ry="50" fill="#FFFFFF" />
+            <ellipse cx="200" cy="180" rx="90" ry="45" fill="#F5F5F5" />
+            <ellipse cx="200" cy="180" rx="80" ry="40" fill="#FAFAFA" />
+
+            {/* Pizza */}
+            <ellipse cx="200" cy="175" rx="65" ry="32" fill="#F4D03F" />
+            {/* Pepperoni */}
+            <circle cx="175" cy="165" r="8" fill="#E74C3C" />
+            <circle cx="205" cy="170" r="7" fill="#E74C3C" />
+            <circle cx="225" cy="162" r="8" fill="#E74C3C" />
+            <circle cx="190" cy="182" r="6" fill="#E74C3C" />
+            <circle cx="218" cy="180" r="7" fill="#E74C3C" />
+            {/* Basil leaves */}
+            <ellipse cx="182" cy="175" rx="6" ry="3" fill="#27AE60" transform="rotate(-20 182 175)" />
+            <ellipse cx="208" cy="178" rx="5" ry="3" fill="#2ECC71" transform="rotate(15 208 178)" />
         </motion.g>
 
-        {/* Person 2 */}
+        {/* Floating burger on left */}
         <motion.g
-            initial={{ x: 0 }}
-            animate={{ x: [0, -10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            initial={{ y: 0 }}
+            animate={{ y: [-8, 4, -8] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
         >
-            <circle cx="300" cy="100" r="25" fill="#f97316" />
-            <circle cx="300" cy="100" r="20" fill="#fb923c" />
-            {/* Face */}
-            <circle cx="293" cy="95" r="3" fill="white" />
-            <circle cx="307" cy="95" r="3" fill="white" />
-            <path d="M292 108 Q300 115 308 108" stroke="white" strokeWidth="2" fill="none" />
-            {/* Body */}
-            <path d="M275 130 Q300 150 325 130" stroke="#f97316" strokeWidth="15" fill="none" />
+            {/* Bun top */}
+            <ellipse cx="80" cy="120" rx="35" ry="15" fill="#DEB887" />
+            <ellipse cx="80" cy="125" rx="33" ry="12" fill="#D2691E" />
+            {/* Fillings */}
+            <rect x="48" y="127" width="64" height="8" rx="2" fill="#27AE60" />
+            <rect x="50" y="135" width="60" height="10" rx="2" fill="#8B4513" />
+            <rect x="48" y="145" width="64" height="6" rx="2" fill="#F1C40F" />
+            {/* Bun bottom */}
+            <ellipse cx="80" cy="155" rx="35" ry="12" fill="#DEB887" />
         </motion.g>
 
-        {/* Handshake / Connection */}
+        {/* Coffee cup on right */}
         <motion.g
-            initial={{ scale: 0.9, opacity: 0.7 }}
-            animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            initial={{ y: 0 }}
+            animate={{ y: [-4, 6, -4] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
         >
-            {/* Connection line */}
-            <motion.line
-                x1="130" y1="120"
-                x2="270" y2="120"
-                stroke="#10b981"
-                strokeWidth="4"
-                strokeDasharray="8 4"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-            />
-
-            {/* Checkmark in center */}
-            <circle cx="200" cy="120" r="25" fill="#10b981" />
+            <rect x="300" y="130" width="45" height="55" rx="6" fill="#FFFFFF" />
+            <rect x="305" y="135" width="35" height="15" rx="2" fill="#6F4E37" />
+            {/* Handle */}
+            <path d="M345 145 Q360 155 345 170" stroke="#FFFFFF" strokeWidth="6" fill="none" />
+            {/* Steam */}
             <motion.path
-                d="M188 120 L196 128 L215 109"
+                d="M315 120 Q318 110 315 100"
+                stroke="#ECEFF1"
+                strokeWidth="3"
+                fill="none"
+                strokeLinecap="round"
+                initial={{ opacity: 0.4 }}
+                animate={{ opacity: [0.4, 0.9, 0.4], y: [0, -8, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+            />
+            <motion.path
+                d="M330 118 Q333 108 330 98"
+                stroke="#ECEFF1"
+                strokeWidth="3"
+                fill="none"
+                strokeLinecap="round"
+                initial={{ opacity: 0.5 }}
+                animate={{ opacity: [0.5, 1, 0.5], y: [0, -10, 0] }}
+                transition={{ duration: 2.3, repeat: Infinity, delay: 0.2 }}
+            />
+        </motion.g>
+
+        {/* Floating coins */}
+        <motion.g
+            initial={{ y: 0, rotate: 0 }}
+            animate={{ y: [-12, 8, -12], rotate: [0, 10, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        >
+            <circle cx="55" cy="220" r="16" fill="#FFD700" stroke="#DAA520" strokeWidth="2" />
+            <text x="50" y="226" fontSize="14" fill="#DAA520" fontWeight="bold">₹</text>
+        </motion.g>
+
+        <motion.g
+            initial={{ y: 0, rotate: 0 }}
+            animate={{ y: [-8, 12, -8], rotate: [0, -10, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+        >
+            <circle cx="350" cy="230" r="14" fill="#FFD700" stroke="#DAA520" strokeWidth="2" />
+            <text x="346" y="235" fontSize="12" fill="#DAA520" fontWeight="bold">₹</text>
+        </motion.g>
+
+        {/* Receipt floating */}
+        <motion.g
+            initial={{ rotate: 10, y: 0 }}
+            animate={{ rotate: [10, 15, 10], y: [-5, 5, -5] }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+            style={{ transformOrigin: "370px 90px" }}
+        >
+            <rect x="340" y="60" width="50" height="70" rx="3" fill="white" />
+            <line x1="350" y1="75" x2="380" y2="75" stroke="#E0E0E0" strokeWidth="2" />
+            <line x1="350" y1="88" x2="375" y2="88" stroke="#E0E0E0" strokeWidth="2" />
+            <line x1="350" y1="101" x2="370" y2="101" stroke="#E0E0E0" strokeWidth="2" />
+            <line x1="350" y1="118" x2="380" y2="118" stroke="#2ECC71" strokeWidth="3" />
+        </motion.g>
+    </svg>
+);
+
+// ==========================================
+// SCREEN 3: SKY / AIRPLANE THEME
+// ==========================================
+const SkyIllustration = () => (
+    <svg viewBox="0 0 400 320" className="onboarding-illustration">
+        {/* Fluffy clouds - background layer */}
+        <motion.g
+            initial={{ x: 0 }}
+            animate={{ x: [-20, 20, -20] }}
+            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+        >
+            <ellipse cx="60" cy="220" rx="50" ry="25" fill="white" opacity="0.8" />
+            <ellipse cx="100" cy="215" rx="40" ry="22" fill="white" opacity="0.8" />
+            <ellipse cx="35" cy="225" rx="30" ry="18" fill="white" opacity="0.8" />
+        </motion.g>
+
+        <motion.g
+            initial={{ x: 0 }}
+            animate={{ x: [15, -15, 15] }}
+            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+        >
+            <ellipse cx="320" cy="250" rx="55" ry="28" fill="white" opacity="0.75" />
+            <ellipse cx="365" cy="245" rx="40" ry="22" fill="white" opacity="0.75" />
+            <ellipse cx="290" cy="255" rx="35" ry="20" fill="white" opacity="0.75" />
+        </motion.g>
+
+        {/* Middle clouds */}
+        <motion.g
+            initial={{ x: -10 }}
+            animate={{ x: 25 }}
+            transition={{ duration: 18, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+        >
+            <ellipse cx="180" cy="280" rx="60" ry="30" fill="white" opacity="0.9" />
+            <ellipse cx="230" cy="275" rx="45" ry="25" fill="white" opacity="0.9" />
+            <ellipse cx="140" cy="285" rx="40" ry="22" fill="white" opacity="0.9" />
+        </motion.g>
+
+        {/* Small decorative clouds */}
+        <motion.g
+            animate={{ x: [0, 10, 0] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        >
+            <ellipse cx="50" cy="80" rx="25" ry="12" fill="white" opacity="0.7" />
+            <ellipse cx="70" cy="78" rx="18" ry="10" fill="white" opacity="0.7" />
+        </motion.g>
+
+        <motion.g
+            animate={{ x: [0, -8, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        >
+            <ellipse cx="350" cy="100" rx="30" ry="14" fill="white" opacity="0.7" />
+            <ellipse cx="375" cy="96" rx="20" ry="11" fill="white" opacity="0.7" />
+        </motion.g>
+
+        {/* Main airplane - smooth left to right motion */}
+        <motion.g
+            initial={{ x: -120, y: 20 }}
+            animate={{ x: 450, y: -30 }}
+            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+        >
+            {/* Contrail */}
+            <motion.line
+                x1="-80" y1="140" x2="-10" y2="140"
                 stroke="white"
                 strokeWidth="4"
+                opacity="0.6"
+                strokeLinecap="round"
+            />
+            <motion.line
+                x1="-60" y1="150" x2="-5" y2="150"
+                stroke="white"
+                strokeWidth="3"
+                opacity="0.4"
+                strokeLinecap="round"
+            />
+
+            {/* Airplane body */}
+            <ellipse cx="50" cy="140" rx="45" ry="12" fill="#FFFFFF" />
+            {/* Cockpit */}
+            <ellipse cx="90" cy="140" rx="12" ry="10" fill="#87CEEB" />
+            {/* Tail */}
+            <path d="M5 140 L-15 120 L5 125 Z" fill="#FFFFFF" />
+            <path d="M5 140 L-10 155 L10 145 Z" fill="#E0E0E0" />
+            {/* Wings */}
+            <path d="M40 140 L25 165 L65 165 L55 140 Z" fill="#E0E0E0" />
+            <path d="M40 140 L30 120 L60 120 L55 140 Z" fill="#FFFFFF" />
+            {/* Engine */}
+            <ellipse cx="45" cy="160" rx="8" ry="5" fill="#BDC3C7" />
+            {/* Windows */}
+            <circle cx="70" cy="138" r="3" fill="#3498DB" />
+            <circle cx="60" cy="138" r="3" fill="#3498DB" />
+            <circle cx="50" cy="138" r="3" fill="#3498DB" />
+            <circle cx="40" cy="138" r="3" fill="#3498DB" />
+            {/* Accent stripe */}
+            <line x1="10" y1="140" x2="85" y2="140" stroke="#E74C3C" strokeWidth="2" />
+        </motion.g>
+
+        {/* Floating settlement checkmark badge */}
+        <motion.g
+            initial={{ scale: 0.9, y: 0 }}
+            animate={{ scale: [0.9, 1.05, 0.9], y: [-5, 5, -5] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        >
+            <circle cx="200" cy="200" r="40" fill="#2ECC71" />
+            <circle cx="200" cy="200" r="35" fill="#27AE60" />
+            <motion.path
+                d="M180 200 L193 213 L222 184"
+                stroke="white"
+                strokeWidth="6"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 fill="none"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
             />
         </motion.g>
 
-        {/* Money flow arrows */}
-        <motion.g
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 1, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        >
-            <path d="M140 140 L180 155" stroke="#10b981" strokeWidth="3" markerEnd="url(#arrowhead)" />
-            <path d="M260 140 L220 155" stroke="#10b981" strokeWidth="3" markerEnd="url(#arrowhead)" />
-        </motion.g>
-
-        <defs>
-            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                <polygon points="0 0, 10 3.5, 0 7" fill="#10b981" />
-            </marker>
-        </defs>
-
-        {/* Balance card */}
-        <motion.g
-            initial={{ y: 0 }}
-            animate={{ y: [-5, 5, -5] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        >
-            <rect x="130" y="190" width="140" height="70" rx="10" fill="white" />
-            <rect x="130" y="190" width="140" height="70" rx="10" stroke="#10b981" strokeWidth="2" fill="none" />
-            <text x="200" y="215" textAnchor="middle" fontSize="12" fill="#64748b">Balance</text>
-            <text x="200" y="245" textAnchor="middle" fontSize="24" fontWeight="bold" fill="#10b981">₹0.00</text>
-        </motion.g>
-
-        {/* Celebration particles */}
-        {[...Array(6)].map((_, i) => (
+        {/* Small floating elements */}
+        {[...Array(5)].map((_, i) => (
             <motion.circle
                 key={i}
-                cx={150 + i * 20}
-                cy={280}
-                r={4}
-                fill={['#6366f1', '#10b981', '#f97316', '#ec4899', '#8b5cf6', '#06b6d4'][i]}
-                initial={{ y: 0, opacity: 1 }}
+                cx={80 + i * 60}
+                cy={300}
+                r={5}
+                fill={['#3498DB', '#2ECC71', '#E74C3C', '#F1C40F', '#9B59B6'][i]}
+                initial={{ y: 0, opacity: 0.8 }}
                 animate={{
-                    y: [-50 - i * 10, 0],
-                    opacity: [1, 0]
+                    y: [-30 - i * 8, 0],
+                    opacity: [0.8, 0]
                 }}
                 transition={{
-                    duration: 2,
+                    duration: 2.5,
                     repeat: Infinity,
-                    delay: i * 0.2,
+                    delay: i * 0.25,
                     ease: "easeOut"
                 }}
             />
@@ -358,9 +404,9 @@ const SettleIllustration = () => (
 );
 
 const illustrations = {
-    travel: TravelIllustration,
+    beach: BeachIllustration,
     food: FoodIllustration,
-    settle: SettleIllustration
+    sky: SkyIllustration
 };
 
 function Onboarding({ onComplete }) {

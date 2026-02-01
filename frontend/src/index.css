@@ -2350,3 +2350,203 @@ select {
     padding: 20px;
   }
 }
+
+/* =========================
+   PLACEHOLDER STYLING
+========================= */
+::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* =========================
+   SPLIT SELECTOR COMPONENT
+========================= */
+.split-selector {
+  margin-top: 12px;
+}
+
+.split-mode-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 4px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+.split-mode-tab {
+  flex: 1;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.split-mode-tab:hover {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.split-mode-tab.active {
+  background: var(--primary);
+  color: white;
+}
+
+.split-participants {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.split-participant {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease;
+}
+
+.split-participant.selected {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+.split-participant.pending {
+  opacity: 0.75;
+}
+
+.participant-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.participant-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.participant-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pending-tag-small {
+  font-size: 10px;
+  padding: 2px 6px;
+  background: var(--warning-light);
+  color: var(--warning);
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.split-input-group {
+  display: flex;
+  align-items: center;
+}
+
+.split-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.split-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.split-input {
+  width: 80px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  text-align: right;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.split-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.split-input.percentage {
+  width: 70px;
+}
+
+.split-input.amount {
+  width: 90px;
+}
+
+.split-unit {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.split-value-small {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-left: 8px;
+}
+
+.split-summary {
+  padding: 16px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  transition: background-color 0.3s ease;
+}
+
+.split-summary.balanced {
+  border: 1px solid var(--success);
+  background: var(--success-light);
+}
+
+.split-summary.unbalanced {
+  border: 1px solid var(--danger);
+  background: var(--danger-light);
+}
+
+.split-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.form-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 16px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  text-align: center;
+}

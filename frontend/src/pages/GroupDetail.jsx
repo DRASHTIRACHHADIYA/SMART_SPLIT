@@ -139,17 +139,25 @@ function GroupDetail() {
 
     const handleAddExpense = async (e) => {
         e.preventDefault();
-        if (!expenseTitle || !expenseAmount || !splitData.isValid) return;
+
+        // Defensive: validate all required fields
+        const parsedAmount = parseFloat(expenseAmount);
+        if (!expenseTitle || !expenseAmount || isNaN(parsedAmount) || parsedAmount <= 0) {
+            console.warn("[AddExpense] Invalid form data", { expenseTitle, expenseAmount, parsedAmount });
+            return;
+        }
+        if (!splitData.isValid) {
+            console.warn("[AddExpense] Split data not valid", splitData);
+            return;
+        }
 
         setAddingExpense(true);
 
         try {
-            const amount = parseFloat(expenseAmount);
-
             await api.post("/expenses", {
                 groupId,
                 title: expenseTitle.trim(),
-                amount,
+                amount: parsedAmount,
                 category: expenseCategory,
                 notes: expenseNotes.trim(),
                 splitType: splitData.splitType,
@@ -164,7 +172,7 @@ function GroupDetail() {
             setSplitData({ splitType: "equal", splits: [], isValid: false });
             fetchGroupData();
         } catch (error) {
-            console.error("Failed to add expense", error);
+            console.error("[AddExpense] Failed to add expense", error);
         } finally {
             setAddingExpense(false);
         }
@@ -793,8 +801,18 @@ function GroupDetail() {
                                         type="number"
                                         placeholder="0.00"
                                         value={expenseAmount}
-                                        onChange={(e) => setExpenseAmount(e.target.value)}
-                                        min="1"
+                                        onChange={(e) => {
+                                            // Defensive: only set value, don't navigate or submit
+                                            const val = e.target.value;
+                                            setExpenseAmount(val);
+                                        }}
+                                        onKeyDown={(e) => {
+                                            // Prevent form submission on Enter in this input
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                            }
+                                        }}
+                                        min="0"
                                         step="0.01"
                                         required
                                     />

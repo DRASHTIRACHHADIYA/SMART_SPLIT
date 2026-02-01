@@ -13,28 +13,26 @@ function SplitSelector({
     const [splitMode, setSplitMode] = useState(initialMode);
     const [splits, setSplits] = useState([]);
 
-    // Initialize splits when participants or mode changes
+    // Track if this is the first render for this mode - used to initialize splits only once per mode
+    const [initialized, setInitialized] = useState(false);
+    const prevModeRef = useState(initialMode);
+
+    // Initialize splits when participants or mode changes (NOT when totalAmount changes)
     useEffect(() => {
         if (!participants || participants.length === 0) {
             setSplits([]);
+            setInitialized(false);
             return;
         }
 
-        if (!totalAmount || totalAmount <= 0) {
-            // Still create splits but with 0 amounts
-            const emptySplits = participants.map((p) => ({
-                ...p,
-                amount: 0,
-                percentage: 0,
-                isSelected: true,
-            }));
-            setSplits(emptySplits);
-            return;
+        // Reset initialization flag when mode changes
+        if (prevModeRef[0] !== splitMode) {
+            prevModeRef[0] = splitMode;
+            setInitialized(false);
         }
 
-        // Only reinitialize if participants changed or mode changed
+        // Create initial splits structure from participants
         const newSplits = participants.map((p) => {
-            // Try to preserve existing split data if participant exists
             const existing = splits.find(s => s.id === p.id);
             return {
                 ...p,
@@ -44,10 +42,56 @@ function SplitSelector({
             };
         });
 
-        // Calculate based on mode
-        distributeSplit(newSplits, splitMode, totalAmount);
+        // Only do full distribution on first init or mode change
+        if (!initialized) {
+            const safeTotal = (typeof totalAmount === 'number' && !isNaN(totalAmount) && totalAmount > 0) ? totalAmount : 0;
+            distributeSplit(newSplits, splitMode, safeTotal);
+            setInitialized(true);
+        }
+
         setSplits(newSplits);
-    }, [participants, splitMode, totalAmount]);
+    }, [participants, splitMode]);
+
+    // Recalculate amounts when totalAmount changes - preserve user-entered values based on mode
+    useEffect(() => {
+        if (!splits.length || !initialized) return;
+
+        const safeTotal = (typeof totalAmount === 'number' && !isNaN(totalAmount) && totalAmount > 0) ? totalAmount : 0;
+
+        setSplits(prev => {
+            return prev.map(s => {
+                if (!s.isSelected) {
+                    return { ...s, amount: 0, percentage: 0 };
+                }
+
+                if (splitMode === "equal") {
+                    // Equal mode: recalculate based on participant count
+                    const selectedCount = prev.filter(p => p.isSelected).length || 1;
+                    const equalAmount = safeTotal > 0 ? safeTotal / selectedCount : 0;
+                    return {
+                        ...s,
+                        amount: Number(equalAmount.toFixed(2)) || 0,
+                        percentage: Number((100 / selectedCount).toFixed(1)) || 0,
+                    };
+                } else if (splitMode === "percentage") {
+                    // Percentage mode: preserve user-entered percentage, recalculate amount
+                    const calcAmount = safeTotal > 0 ? ((s.percentage / 100) * safeTotal) : 0;
+                    return {
+                        ...s,
+                        amount: Number(calcAmount.toFixed(2)) || 0,
+                    };
+                } else if (splitMode === "custom") {
+                    // Custom mode: preserve user-entered amount, recalculate percentage
+                    const calcPercentage = safeTotal > 0 ? ((s.amount / safeTotal) * 100) : 0;
+                    return {
+                        ...s,
+                        percentage: Number(calcPercentage.toFixed(1)) || 0,
+                    };
+                }
+                return s;
+            });
+        });
+    }, [totalAmount, initialized, splitMode]);
 
     // Recalculate when selections change
     useEffect(() => {

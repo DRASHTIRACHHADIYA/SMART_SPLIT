@@ -96,7 +96,7 @@ function Login() {
           // Existing user - log them in
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("user", JSON.stringify(res.data.user));
-          navigate("/dashboard");
+          navigate("/home");
         }
       }
     } catch (err) {
@@ -140,9 +140,9 @@ function Login() {
           setSuccess(
             `Welcome! You joined ${r.groupsJoined} group(s) with ${r.expensesUpdated} expense(s).`
           );
-          setTimeout(() => navigate("/dashboard"), 2000);
+          setTimeout(() => navigate("/home"), 2000);
         } else {
-          navigate("/dashboard");
+          navigate("/home");
         }
       }
     } catch (err) {
@@ -167,7 +167,7 @@ function Login() {
       if (res.data.user) {
         localStorage.setItem("user", JSON.stringify(res.data.user));
       }
-      navigate("/dashboard");
+      navigate("/home");
     } catch (err) {
       setError(err.response?.data?.msg || "Login failed");
     } finally {
