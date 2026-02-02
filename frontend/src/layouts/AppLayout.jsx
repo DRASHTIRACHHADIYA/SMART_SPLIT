@@ -13,28 +13,57 @@ function AppLayout() {
     const [user, setUser] = useState(null);
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const { theme, toggleTheme } = useTheme();
+    const [isReady, setIsReady] = useState(false);
 
-    // Onboarding state - show for first-time users only
-    const [showOnboarding, setShowOnboarding] = useState(() => {
-        const isComplete = localStorage.getItem('smartsplit-onboarding-complete');
-        console.log('[Onboarding] Mount check - complete:', !!isComplete);
-        return !isComplete;
-    });
+    // Onboarding state - initialized to false, set after checking conditions
+    const [showOnboarding, setShowOnboarding] = useState(false);
 
+    // Load user and check onboarding on mount
     useEffect(() => {
+        const token = localStorage.getItem("token");
         const userData = localStorage.getItem("user");
+        const onboardingComplete = sessionStorage.getItem('smartsplit-onboarding-session');
+
+        console.log('[AppLayout] Mount check:', {
+            hasToken: !!token,
+            hasUser: !!userData,
+            onboardingComplete: !!onboardingComplete
+        });
+
+        // Only proceed if we have a valid token
+        if (!token) {
+            console.log('[AppLayout] No token, redirecting');
+            navigate("/login");
+            return;
+        }
+
+        // Parse user data
         if (userData) {
             try {
                 setUser(JSON.parse(userData));
             } catch (e) {
-                console.error("Failed to parse user data");
+                console.error("[AppLayout] Failed to parse user data");
             }
         }
-    }, []);
+
+        // Show onboarding only if:
+        // 1. User is authenticated (token exists)
+        // 2. Onboarding has not been completed (no localStorage flag)
+        if (!onboardingComplete) {
+            console.log('[Onboarding] Showing onboarding - first time user');
+            setShowOnboarding(true);
+        } else {
+            console.log('[Onboarding] Skipping - already completed');
+        }
+
+        setIsReady(true);
+    }, [navigate]);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        // Clear onboarding flag so it shows again on next login
+        sessionStorage.removeItem('smartsplit-onboarding-session');
         navigate("/login");
     };
 
@@ -46,11 +75,17 @@ function AppLayout() {
 
     // Handle onboarding completion
     const handleOnboardingComplete = () => {
-        console.log('[Onboarding] Completed - hiding overlay');
+        console.log('[Onboarding] Completed - saving to session');
+        sessionStorage.setItem('smartsplit-onboarding-session', 'true');
         setShowOnboarding(false);
     };
 
-    // Show fullscreen onboarding for first-time users
+    // Don't render anything until ready
+    if (!isReady) {
+        return null;
+    }
+
+    // Show fullscreen onboarding for first-time users after login
     if (showOnboarding) {
         return <Onboarding onComplete={handleOnboardingComplete} />;
     }

@@ -442,7 +442,7 @@ function Onboarding({ onComplete }) {
     };
 
     const handleComplete = () => {
-        localStorage.setItem('smartsplit-onboarding-complete', 'true');
+        sessionStorage.setItem('smartsplit-onboarding-session', 'true');
         onComplete();
     };
 

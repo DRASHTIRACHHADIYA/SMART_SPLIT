@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 /**
  * SplitSelector - Advanced expense splitting component
@@ -15,7 +15,7 @@ function SplitSelector({
 
     // Track if this is the first render for this mode - used to initialize splits only once per mode
     const [initialized, setInitialized] = useState(false);
-    const prevModeRef = useState(initialMode);
+    const prevModeRef = useRef(initialMode);
 
     // Initialize splits when participants or mode changes (NOT when totalAmount changes)
     useEffect(() => {
@@ -26,8 +26,8 @@ function SplitSelector({
         }
 
         // Reset initialization flag when mode changes
-        if (prevModeRef[0] !== splitMode) {
-            prevModeRef[0] = splitMode;
+        if (prevModeRef.current !== splitMode) {
+            prevModeRef.current = splitMode;
             setInitialized(false);
         }
 
@@ -101,12 +101,13 @@ function SplitSelector({
             splits: selectedSplits.map(s => ({
                 participantId: s.id,
                 participantType: s.type,
-                amount: s.amount,
-                percentage: s.percentage,
+                amount: s.amount || 0,
+                percentage: s.percentage || 0,
             })),
             isValid: validateSplit(selectedSplits, totalAmount),
         });
-    }, [splits, splitMode, totalAmount, onSplitChange]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [splits, splitMode, totalAmount]);
 
     const distributeSplit = (splitList, mode, total) => {
         // Defensive: ensure total is a valid positive number
@@ -275,7 +276,7 @@ function SplitSelector({
                         {split.isSelected && (
                             <div className="split-input-group">
                                 {splitMode === "equal" && (
-                                    <span className="split-value">₹{split.amount.toFixed(2)}</span>
+                                    <span className="split-value">₹{(split.amount || 0).toFixed(2)}</span>
                                 )}
 
                                 {splitMode === "percentage" && (
@@ -290,7 +291,7 @@ function SplitSelector({
                                             step="0.1"
                                         />
                                         <span className="split-unit">%</span>
-                                        <span className="split-value-small">= ₹{split.amount.toFixed(2)}</span>
+                                        <span className="split-value-small">= ₹{(split.amount || 0).toFixed(2)}</span>
                                     </div>
                                 )}
 
