@@ -2,411 +2,503 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
- * Onboarding - Premium full-screen motion onboarding
- * Shows 3 visually rich animated screens:
- * 1. Beach/Travel Theme
- * 2. Food/Dining Theme
- * 3. Sky/Airplane Theme
+ * Onboarding - Premium FULLSCREEN immersive motion onboarding
+ * Shows 3 visually rich animated screens with parallax effects:
+ * 1. Food Theme (plate, pizza, burger, coffee, coins floating)
+ * 2. Travel Theme (sky gradient, airplane, clouds, tickets)
+ * 3. Settlement Theme (shared food, payment confirmation)
  */
 
 const screens = [
     {
         id: 1,
-        title: "Trips made simple",
-        subtitle: "Split expenses on vacations and adventures with friends",
-        gradient: "linear-gradient(180deg, #87CEEB 0%, #4A90D9 50%, #1E5AA8 100%)",
-        illustration: "beach"
+        title: "Split food expenses effortlessly",
+        subtitle: "Dinners, lunches, and late-night cravings — all covered",
+        gradient: "linear-gradient(165deg, #F8B195 0%, #F67280 50%, #C06C84 100%)",
+        illustration: "food"
     },
     {
         id: 2,
-        title: "Split food expenses effortlessly",
-        subtitle: "Dinners, lunches, and late-night cravings — all covered",
-        gradient: "linear-gradient(180deg, #FF9A56 0%, #FF6B6B 50%, #EE4266 100%)",
-        illustration: "food"
+        title: "Trips made simple",
+        subtitle: "Split expenses on vacations and adventures with friends",
+        gradient: "linear-gradient(165deg, #A8E6CF 0%, #56C596 50%, #3D8B7A 100%)",
+        illustration: "travel"
     },
     {
         id: 3,
         title: "Settle up, stress-free",
         subtitle: "Track balances and close out trips with ease",
-        gradient: "linear-gradient(180deg, #E0F4FF 0%, #87CEEB 40%, #4A90D9 100%)",
-        illustration: "sky"
+        gradient: "linear-gradient(165deg, #89C4E1 0%, #5B9DC9 50%, #3A6EA5 100%)",
+        illustration: "settlement"
     }
 ];
 
 // ==========================================
-// SCREEN 1: BEACH / TRAVEL THEME
-// ==========================================
-const BeachIllustration = () => (
-    <svg viewBox="0 0 400 320" className="onboarding-illustration">
-        {/* Sun with glow */}
-        <motion.circle
-            cx="320" cy="50" r="35"
-            fill="#FFD93D"
-            initial={{ scale: 0.9 }}
-            animate={{ scale: [0.9, 1.05, 0.9] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.circle
-            cx="320" cy="50" r="50"
-            fill="#FFD93D"
-            opacity="0.3"
-            initial={{ scale: 0.95 }}
-            animate={{ scale: [0.95, 1.15, 0.95] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* Floating clouds with parallax */}
-        <motion.g
-            initial={{ x: -30 }}
-            animate={{ x: 30 }}
-            transition={{ duration: 8, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-        >
-            <ellipse cx="80" cy="60" rx="35" ry="18" fill="white" opacity="0.95" />
-            <ellipse cx="110" cy="55" rx="28" ry="15" fill="white" opacity="0.95" />
-            <ellipse cx="55" cy="65" rx="22" ry="12" fill="white" opacity="0.95" />
-        </motion.g>
-
-        <motion.g
-            initial={{ x: 20 }}
-            animate={{ x: -20 }}
-            transition={{ duration: 10, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-        >
-            <ellipse cx="240" cy="40" rx="30" ry="15" fill="white" opacity="0.85" />
-            <ellipse cx="265" cy="45" rx="22" ry="12" fill="white" opacity="0.85" />
-        </motion.g>
-
-        {/* Ocean waves - animated */}
-        <motion.path
-            d="M0 220 Q50 205 100 220 T200 220 T300 220 T400 220 L400 320 L0 320 Z"
-            fill="#1E88E5"
-            animate={{
-                d: [
-                    "M0 220 Q50 205 100 220 T200 220 T300 220 T400 220 L400 320 L0 320 Z",
-                    "M0 220 Q50 235 100 220 T200 220 T300 220 T400 220 L400 320 L0 320 Z"
-                ]
-            }}
-            transition={{ duration: 2.5, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-        />
-        <motion.path
-            d="M0 235 Q60 220 120 235 T240 235 T360 235 T400 235 L400 320 L0 320 Z"
-            fill="#2196F3"
-            animate={{
-                d: [
-                    "M0 235 Q60 220 120 235 T240 235 T360 235 T400 235 L400 320 L0 320 Z",
-                    "M0 235 Q60 250 120 235 T240 235 T360 235 T400 235 L400 320 L0 320 Z"
-                ]
-            }}
-            transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-        />
-
-        {/* Beach / Sand */}
-        <path d="M0 260 Q100 250 200 260 T400 255 L400 320 L0 320 Z" fill="#F4D03F" />
-        <path d="M0 275 Q80 268 150 275 T320 272 T400 275 L400 320 L0 320 Z" fill="#E9C46A" />
-
-        {/* Palm tree with gentle sway */}
-        <rect x="70" y="175" width="10" height="85" rx="3" fill="#8B4513" />
-        <motion.g
-            animate={{ rotate: [-3, 3, -3] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformOrigin: "75px 180px" }}
-        >
-            <path d="M75 180 Q45 155 20 165" stroke="#228B22" strokeWidth="10" fill="none" strokeLinecap="round" />
-            <path d="M75 180 Q50 145 25 140" stroke="#2E7D32" strokeWidth="9" fill="none" strokeLinecap="round" />
-            <path d="M75 180 Q85 145 115 145" stroke="#2E7D32" strokeWidth="9" fill="none" strokeLinecap="round" />
-            <path d="M75 180 Q100 155 130 165" stroke="#228B22" strokeWidth="10" fill="none" strokeLinecap="round" />
-            <path d="M75 180 Q75 150 75 130" stroke="#43A047" strokeWidth="7" fill="none" strokeLinecap="round" />
-        </motion.g>
-
-        {/* Floating beach ball */}
-        <motion.g
-            initial={{ y: 0 }}
-            animate={{ y: [-5, 5, -5] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        >
-            <circle cx="300" cy="250" r="18" fill="#FF6B6B" />
-            <path d="M283 250 Q300 235 318 250" fill="#FFD93D" />
-            <path d="M283 250 Q300 265 318 250" fill="#4ECDC4" />
-            <circle cx="300" cy="250" r="18" fill="none" stroke="white" strokeWidth="2" />
-        </motion.g>
-
-        {/* Floating suitcase */}
-        <motion.g
-            initial={{ y: 0, rotate: -5 }}
-            animate={{ y: [-3, 3, -3], rotate: [-5, 0, -5] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        >
-            <rect x="340" y="230" width="40" height="30" rx="4" fill="#E74C3C" />
-            <rect x="340" y="230" width="40" height="8" rx="2" fill="#C0392B" />
-            <rect x="355" y="223" width="10" height="8" rx="2" fill="#7F8C8D" />
-            <line x1="350" y1="245" x2="370" y2="245" stroke="#C0392B" strokeWidth="2" />
-        </motion.g>
-    </svg>
-);
-
-// ==========================================
-// SCREEN 2: FOOD / DINING THEME
+// SCREEN 1: FOOD / DINING THEME - FULLSCREEN
 // ==========================================
 const FoodIllustration = () => (
-    <svg viewBox="0 0 400 320" className="onboarding-illustration">
-        {/* Table */}
-        <ellipse cx="200" cy="290" rx="180" ry="25" fill="#8B4513" opacity="0.6" />
-        <path d="M30 260 Q200 280 370 260 L370 280 Q200 295 30 280 Z" fill="#A0522D" />
+    <div className="illustration-fullscreen">
+        <svg viewBox="0 0 100 100" className="onboarding-svg-fullscreen" preserveAspectRatio="xMidYMid slice">
+            {/* Background floating elements - SLOW PARALLAX LAYER */}
+            <motion.g
+                className="parallax-background"
+                initial={{ y: 0 }}
+                animate={{ y: [-2, 2, -2] }}
+                transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+            >
+                {/* Floating receipt top-right */}
+                <motion.g
+                    initial={{ rotate: 15, y: 0 }}
+                    animate={{ rotate: [15, 22, 15], y: [-3, 3, -3] }}
+                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                    style={{ transformOrigin: "85% 15%" }}
+                >
+                    <rect x="78" y="8" width="16" height="22" rx="1.5" fill="white" opacity="0.95" />
+                    <line x1="81" y1="13" x2="91" y2="13" stroke="#E0E0E0" strokeWidth="1" />
+                    <line x1="81" y1="17" x2="89" y2="17" stroke="#E0E0E0" strokeWidth="1" />
+                    <line x1="81" y1="21" x2="87" y2="21" stroke="#E0E0E0" strokeWidth="1" />
+                    <line x1="81" y1="26" x2="91" y2="26" stroke="#2ECC71" strokeWidth="1.5" />
+                </motion.g>
 
-        {/* Main plate with pizza */}
-        <motion.g
-            initial={{ scale: 0.95, y: 0 }}
-            animate={{ scale: [0.95, 1, 0.95], y: [-2, 2, -2] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        >
-            {/* Plate */}
-            <ellipse cx="200" cy="180" rx="100" ry="50" fill="#FFFFFF" />
-            <ellipse cx="200" cy="180" rx="90" ry="45" fill="#F5F5F5" />
-            <ellipse cx="200" cy="180" rx="80" ry="40" fill="#FAFAFA" />
+                {/* Soft decorative circles - background depth */}
+                <circle cx="12" cy="20" r="8" fill="white" opacity="0.08" />
+                <circle cx="88" cy="75" r="12" fill="white" opacity="0.06" />
+                <circle cx="20" cy="80" r="6" fill="white" opacity="0.1" />
+            </motion.g>
 
-            {/* Pizza */}
-            <ellipse cx="200" cy="175" rx="65" ry="32" fill="#F4D03F" />
-            {/* Pepperoni */}
-            <circle cx="175" cy="165" r="8" fill="#E74C3C" />
-            <circle cx="205" cy="170" r="7" fill="#E74C3C" />
-            <circle cx="225" cy="162" r="8" fill="#E74C3C" />
-            <circle cx="190" cy="182" r="6" fill="#E74C3C" />
-            <circle cx="218" cy="180" r="7" fill="#E74C3C" />
-            {/* Basil leaves */}
-            <ellipse cx="182" cy="175" rx="6" ry="3" fill="#27AE60" transform="rotate(-20 182 175)" />
-            <ellipse cx="208" cy="178" rx="5" ry="3" fill="#2ECC71" transform="rotate(15 208 178)" />
-        </motion.g>
+            {/* Middle layer - MEDIUM PARALLAX */}
+            <motion.g
+                className="parallax-middle"
+                initial={{ y: 0 }}
+                animate={{ y: [-1.5, 1.5, -1.5] }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            >
+                {/* Large plate with pizza - CENTER FOCUS */}
+                <motion.g
+                    initial={{ scale: 0.96 }}
+                    animate={{ scale: [0.96, 1.02, 0.96] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                >
+                    {/* Plate shadow */}
+                    <ellipse cx="50" cy="58" rx="28" ry="10" fill="rgba(0,0,0,0.15)" />
+                    {/* Plate outer */}
+                    <ellipse cx="50" cy="52" rx="26" ry="13" fill="#FFFFFF" />
+                    <ellipse cx="50" cy="52" rx="23" ry="11.5" fill="#F5F5F5" />
+                    <ellipse cx="50" cy="52" rx="20" ry="10" fill="#FAFAFA" />
 
-        {/* Floating burger on left */}
-        <motion.g
-            initial={{ y: 0 }}
-            animate={{ y: [-8, 4, -8] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-        >
-            {/* Bun top */}
-            <ellipse cx="80" cy="120" rx="35" ry="15" fill="#DEB887" />
-            <ellipse cx="80" cy="125" rx="33" ry="12" fill="#D2691E" />
-            {/* Fillings */}
-            <rect x="48" y="127" width="64" height="8" rx="2" fill="#27AE60" />
-            <rect x="50" y="135" width="60" height="10" rx="2" fill="#8B4513" />
-            <rect x="48" y="145" width="64" height="6" rx="2" fill="#F1C40F" />
-            {/* Bun bottom */}
-            <ellipse cx="80" cy="155" rx="35" ry="12" fill="#DEB887" />
-        </motion.g>
+                    {/* Pizza */}
+                    <ellipse cx="50" cy="50" rx="17" ry="8.5" fill="#F4D03F" />
+                    {/* Pepperoni */}
+                    <circle cx="44" cy="48" r="2.5" fill="#E74C3C" />
+                    <circle cx="52" cy="50" r="2.2" fill="#E74C3C" />
+                    <circle cx="57" cy="47" r="2.5" fill="#E74C3C" />
+                    <circle cx="47" cy="53" r="2" fill="#E74C3C" />
+                    <circle cx="55" cy="52" r="2.2" fill="#E74C3C" />
+                    {/* Basil leaves */}
+                    <ellipse cx="46" cy="51" rx="1.8" ry="0.9" fill="#27AE60" transform="rotate(-20 46 51)" />
+                    <ellipse cx="53" cy="49" rx="1.6" ry="0.8" fill="#2ECC71" transform="rotate(15 53 49)" />
+                </motion.g>
+            </motion.g>
 
-        {/* Coffee cup on right */}
-        <motion.g
-            initial={{ y: 0 }}
-            animate={{ y: [-4, 6, -4] }}
-            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-        >
-            <rect x="300" y="130" width="45" height="55" rx="6" fill="#FFFFFF" />
-            <rect x="305" y="135" width="35" height="15" rx="2" fill="#6F4E37" />
-            {/* Handle */}
-            <path d="M345 145 Q360 155 345 170" stroke="#FFFFFF" strokeWidth="6" fill="none" />
-            {/* Steam */}
-            <motion.path
-                d="M315 120 Q318 110 315 100"
-                stroke="#ECEFF1"
-                strokeWidth="3"
-                fill="none"
-                strokeLinecap="round"
-                initial={{ opacity: 0.4 }}
-                animate={{ opacity: [0.4, 0.9, 0.4], y: [0, -8, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-            />
-            <motion.path
-                d="M330 118 Q333 108 330 98"
-                stroke="#ECEFF1"
-                strokeWidth="3"
-                fill="none"
-                strokeLinecap="round"
-                initial={{ opacity: 0.5 }}
-                animate={{ opacity: [0.5, 1, 0.5], y: [0, -10, 0] }}
-                transition={{ duration: 2.3, repeat: Infinity, delay: 0.2 }}
-            />
-        </motion.g>
+            {/* Foreground layer - FAST PARALLAX */}
+            <motion.g
+                className="parallax-foreground"
+                initial={{ y: 0 }}
+                animate={{ y: [-3, 2, -3] }}
+                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            >
+                {/* Floating burger - left side */}
+                <motion.g
+                    initial={{ y: 0, rotate: -5 }}
+                    animate={{ y: [-6, 4, -6], rotate: [-5, 2, -5] }}
+                    transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+                >
+                    {/* Bun top */}
+                    <ellipse cx="18" cy="35" rx="11" ry="5" fill="#DEB887" />
+                    <ellipse cx="18" cy="37" rx="10" ry="4" fill="#D2691E" />
+                    {/* Fillings */}
+                    <rect x="8" y="38" width="20" height="3" rx="1" fill="#27AE60" />
+                    <rect x="9" y="41" width="18" height="3.5" rx="1" fill="#8B4513" />
+                    <rect x="8" y="44.5" width="20" height="2" rx="0.5" fill="#F1C40F" />
+                    {/* Bun bottom */}
+                    <ellipse cx="18" cy="48" rx="11" ry="4" fill="#DEB887" />
+                </motion.g>
 
-        {/* Floating coins */}
-        <motion.g
-            initial={{ y: 0, rotate: 0 }}
-            animate={{ y: [-12, 8, -12], rotate: [0, 10, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        >
-            <circle cx="55" cy="220" r="16" fill="#FFD700" stroke="#DAA520" strokeWidth="2" />
-            <text x="50" y="226" fontSize="14" fill="#DAA520" fontWeight="bold">₹</text>
-        </motion.g>
+                {/* Coffee cup - right side */}
+                <motion.g
+                    initial={{ y: 0 }}
+                    animate={{ y: [-4, 5, -4] }}
+                    transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+                >
+                    <rect x="76" y="38" width="14" height="18" rx="2" fill="#FFFFFF" />
+                    <rect x="78" y="40" width="10" height="5" rx="1" fill="#6F4E37" />
+                    {/* Handle */}
+                    <path d="M90 44 Q94 48 90 52" stroke="#FFFFFF" strokeWidth="2" fill="none" />
+                    {/* Steam */}
+                    <motion.path
+                        d="M82 34 Q84 29 82 24"
+                        stroke="rgba(255,255,255,0.6)"
+                        strokeWidth="1"
+                        fill="none"
+                        strokeLinecap="round"
+                        animate={{ opacity: [0.3, 0.8, 0.3], y: [0, -3, 0] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                    />
+                    <motion.path
+                        d="M86 35 Q88 30 86 25"
+                        stroke="rgba(255,255,255,0.5)"
+                        strokeWidth="1"
+                        fill="none"
+                        strokeLinecap="round"
+                        animate={{ opacity: [0.4, 0.9, 0.4], y: [0, -4, 0] }}
+                        transition={{ duration: 2.3, repeat: Infinity, delay: 0.2 }}
+                    />
+                </motion.g>
 
-        <motion.g
-            initial={{ y: 0, rotate: 0 }}
-            animate={{ y: [-8, 12, -8], rotate: [0, -10, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-        >
-            <circle cx="350" cy="230" r="14" fill="#FFD700" stroke="#DAA520" strokeWidth="2" />
-            <text x="346" y="235" fontSize="12" fill="#DAA520" fontWeight="bold">₹</text>
-        </motion.g>
+                {/* Floating coins - scattered */}
+                <motion.g
+                    initial={{ y: 0, rotate: 0 }}
+                    animate={{ y: [-8, 5, -8], rotate: [0, 15, 0] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                >
+                    <circle cx="8" cy="65" r="5" fill="#FFD700" stroke="#DAA520" strokeWidth="0.8" />
+                    <text x="6" y="67" fontSize="4" fill="#DAA520" fontWeight="bold">₹</text>
+                </motion.g>
 
-        {/* Receipt floating */}
-        <motion.g
-            initial={{ rotate: 10, y: 0 }}
-            animate={{ rotate: [10, 15, 10], y: [-5, 5, -5] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformOrigin: "370px 90px" }}
-        >
-            <rect x="340" y="60" width="50" height="70" rx="3" fill="white" />
-            <line x1="350" y1="75" x2="380" y2="75" stroke="#E0E0E0" strokeWidth="2" />
-            <line x1="350" y1="88" x2="375" y2="88" stroke="#E0E0E0" strokeWidth="2" />
-            <line x1="350" y1="101" x2="370" y2="101" stroke="#E0E0E0" strokeWidth="2" />
-            <line x1="350" y1="118" x2="380" y2="118" stroke="#2ECC71" strokeWidth="3" />
-        </motion.g>
-    </svg>
+                <motion.g
+                    initial={{ y: 0, rotate: 0 }}
+                    animate={{ y: [-5, 7, -5], rotate: [0, -12, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                >
+                    <circle cx="92" cy="68" r="4.5" fill="#FFD700" stroke="#DAA520" strokeWidth="0.8" />
+                    <text x="90" y="70" fontSize="3.5" fill="#DAA520" fontWeight="bold">₹</text>
+                </motion.g>
+
+                <motion.g
+                    initial={{ y: 0, rotate: 5 }}
+                    animate={{ y: [-6, 4, -6], rotate: [5, -8, 5] }}
+                    transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
+                >
+                    <circle cx="35" cy="78" r="4" fill="#FFD700" stroke="#DAA520" strokeWidth="0.6" />
+                    <text x="33.2" y="80" fontSize="3" fill="#DAA520" fontWeight="bold">₹</text>
+                </motion.g>
+            </motion.g>
+        </svg>
+    </div>
 );
 
 // ==========================================
-// SCREEN 3: SKY / AIRPLANE THEME
+// SCREEN 2: TRAVEL / SKY THEME - FULLSCREEN
 // ==========================================
-const SkyIllustration = () => (
-    <svg viewBox="0 0 400 320" className="onboarding-illustration">
-        {/* Fluffy clouds - background layer */}
-        <motion.g
-            initial={{ x: 0 }}
-            animate={{ x: [-20, 20, -20] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-        >
-            <ellipse cx="60" cy="220" rx="50" ry="25" fill="white" opacity="0.8" />
-            <ellipse cx="100" cy="215" rx="40" ry="22" fill="white" opacity="0.8" />
-            <ellipse cx="35" cy="225" rx="30" ry="18" fill="white" opacity="0.8" />
-        </motion.g>
+const TravelIllustration = () => (
+    <div className="illustration-fullscreen">
+        <svg viewBox="0 0 100 100" className="onboarding-svg-fullscreen" preserveAspectRatio="xMidYMid slice">
+            {/* Background clouds - SLOW PARALLAX */}
+            <motion.g
+                className="parallax-background"
+                initial={{ x: 0 }}
+                animate={{ x: [-4, 4, -4] }}
+                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+            >
+                <ellipse cx="15" cy="75" rx="18" ry="9" fill="white" opacity="0.7" />
+                <ellipse cx="28" cy="72" rx="12" ry="7" fill="white" opacity="0.7" />
+                <ellipse cx="5" cy="80" rx="10" ry="6" fill="white" opacity="0.7" />
+            </motion.g>
 
-        <motion.g
-            initial={{ x: 0 }}
-            animate={{ x: [15, -15, 15] }}
-            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-        >
-            <ellipse cx="320" cy="250" rx="55" ry="28" fill="white" opacity="0.75" />
-            <ellipse cx="365" cy="245" rx="40" ry="22" fill="white" opacity="0.75" />
-            <ellipse cx="290" cy="255" rx="35" ry="20" fill="white" opacity="0.75" />
-        </motion.g>
+            <motion.g
+                initial={{ x: 0 }}
+                animate={{ x: [5, -5, 5] }}
+                transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+            >
+                <ellipse cx="82" cy="80" rx="20" ry="10" fill="white" opacity="0.65" />
+                <ellipse cx="95" cy="76" rx="14" ry="8" fill="white" opacity="0.65" />
+                <ellipse cx="70" cy="85" rx="12" ry="7" fill="white" opacity="0.65" />
+            </motion.g>
 
-        {/* Middle clouds */}
-        <motion.g
-            initial={{ x: -10 }}
-            animate={{ x: 25 }}
-            transition={{ duration: 18, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
-        >
-            <ellipse cx="180" cy="280" rx="60" ry="30" fill="white" opacity="0.9" />
-            <ellipse cx="230" cy="275" rx="45" ry="25" fill="white" opacity="0.9" />
-            <ellipse cx="140" cy="285" rx="40" ry="22" fill="white" opacity="0.9" />
-        </motion.g>
+            {/* Middle layer clouds - MEDIUM PARALLAX */}
+            <motion.g
+                className="parallax-middle"
+                initial={{ x: -3 }}
+                animate={{ x: 6 }}
+                transition={{ duration: 24, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+            >
+                <ellipse cx="50" cy="88" rx="22" ry="11" fill="white" opacity="0.85" />
+                <ellipse cx="68" cy="84" rx="15" ry="8" fill="white" opacity="0.85" />
+                <ellipse cx="35" cy="92" rx="14" ry="8" fill="white" opacity="0.85" />
+            </motion.g>
 
-        {/* Small decorative clouds */}
-        <motion.g
-            animate={{ x: [0, 10, 0] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        >
-            <ellipse cx="50" cy="80" rx="25" ry="12" fill="white" opacity="0.7" />
-            <ellipse cx="70" cy="78" rx="18" ry="10" fill="white" opacity="0.7" />
-        </motion.g>
+            {/* Small decorative clouds - TOP */}
+            <motion.g
+                animate={{ x: [0, 4, 0] }}
+                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            >
+                <ellipse cx="12" cy="18" rx="8" ry="4" fill="white" opacity="0.6" />
+                <ellipse cx="18" cy="16" rx="6" ry="3.5" fill="white" opacity="0.6" />
+            </motion.g>
 
-        <motion.g
-            animate={{ x: [0, -8, 0] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        >
-            <ellipse cx="350" cy="100" rx="30" ry="14" fill="white" opacity="0.7" />
-            <ellipse cx="375" cy="96" rx="20" ry="11" fill="white" opacity="0.7" />
-        </motion.g>
+            <motion.g
+                animate={{ x: [0, -3, 0] }}
+                transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+            >
+                <ellipse cx="85" cy="22" rx="10" ry="5" fill="white" opacity="0.55" />
+                <ellipse cx="92" cy="20" rx="7" ry="4" fill="white" opacity="0.55" />
+            </motion.g>
 
-        {/* Main airplane - smooth left to right motion */}
-        <motion.g
-            initial={{ x: -120, y: 20 }}
-            animate={{ x: 450, y: -30 }}
-            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-        >
-            {/* Contrail */}
-            <motion.line
-                x1="-80" y1="140" x2="-10" y2="140"
-                stroke="white"
-                strokeWidth="4"
-                opacity="0.6"
-                strokeLinecap="round"
-            />
-            <motion.line
-                x1="-60" y1="150" x2="-5" y2="150"
-                stroke="white"
-                strokeWidth="3"
-                opacity="0.4"
-                strokeLinecap="round"
-            />
-
-            {/* Airplane body */}
-            <ellipse cx="50" cy="140" rx="45" ry="12" fill="#FFFFFF" />
-            {/* Cockpit */}
-            <ellipse cx="90" cy="140" rx="12" ry="10" fill="#87CEEB" />
-            {/* Tail */}
-            <path d="M5 140 L-15 120 L5 125 Z" fill="#FFFFFF" />
-            <path d="M5 140 L-10 155 L10 145 Z" fill="#E0E0E0" />
-            {/* Wings */}
-            <path d="M40 140 L25 165 L65 165 L55 140 Z" fill="#E0E0E0" />
-            <path d="M40 140 L30 120 L60 120 L55 140 Z" fill="#FFFFFF" />
-            {/* Engine */}
-            <ellipse cx="45" cy="160" rx="8" ry="5" fill="#BDC3C7" />
-            {/* Windows */}
-            <circle cx="70" cy="138" r="3" fill="#3498DB" />
-            <circle cx="60" cy="138" r="3" fill="#3498DB" />
-            <circle cx="50" cy="138" r="3" fill="#3498DB" />
-            <circle cx="40" cy="138" r="3" fill="#3498DB" />
-            {/* Accent stripe */}
-            <line x1="10" y1="140" x2="85" y2="140" stroke="#E74C3C" strokeWidth="2" />
-        </motion.g>
-
-        {/* Floating settlement checkmark badge */}
-        <motion.g
-            initial={{ scale: 0.9, y: 0 }}
-            animate={{ scale: [0.9, 1.05, 0.9], y: [-5, 5, -5] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        >
-            <circle cx="200" cy="200" r="40" fill="#2ECC71" />
-            <circle cx="200" cy="200" r="35" fill="#27AE60" />
-            <motion.path
-                d="M180 200 L193 213 L222 184"
-                stroke="white"
-                strokeWidth="6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-            />
-        </motion.g>
-
-        {/* Small floating elements */}
-        {[...Array(5)].map((_, i) => (
+            {/* Sun with glow */}
             <motion.circle
-                key={i}
-                cx={80 + i * 60}
-                cy={300}
-                r={5}
-                fill={['#3498DB', '#2ECC71', '#E74C3C', '#F1C40F', '#9B59B6'][i]}
-                initial={{ y: 0, opacity: 0.8 }}
-                animate={{
-                    y: [-30 - i * 8, 0],
-                    opacity: [0.8, 0]
-                }}
-                transition={{
-                    duration: 2.5,
-                    repeat: Infinity,
-                    delay: i * 0.25,
-                    ease: "easeOut"
-                }}
+                cx="85" cy="12"
+                r="8"
+                fill="#FFD93D"
+                initial={{ scale: 0.95 }}
+                animate={{ scale: [0.95, 1.1, 0.95] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             />
-        ))}
-    </svg>
+            <motion.circle
+                cx="85" cy="12"
+                r="12"
+                fill="#FFD93D"
+                opacity="0.2"
+                initial={{ scale: 0.9 }}
+                animate={{ scale: [0.9, 1.25, 0.9] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            />
+
+            {/* Main airplane - smooth flight path */}
+            <motion.g
+                initial={{ x: -35, y: 15 }}
+                animate={{ x: 120, y: -10 }}
+                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+            >
+                {/* Contrail */}
+                <motion.line
+                    x1="-25" y1="42" x2="-5" y2="42"
+                    stroke="white"
+                    strokeWidth="1.2"
+                    opacity="0.5"
+                    strokeLinecap="round"
+                />
+                <motion.line
+                    x1="-20" y1="45" x2="-3" y2="45"
+                    stroke="white"
+                    strokeWidth="0.8"
+                    opacity="0.3"
+                    strokeLinecap="round"
+                />
+
+                {/* Airplane body */}
+                <ellipse cx="12" cy="42" rx="12" ry="3.2" fill="#FFFFFF" />
+                {/* Cockpit */}
+                <ellipse cx="22" cy="42" rx="3" ry="2.6" fill="#87CEEB" />
+                {/* Tail */}
+                <path d="M0 42 L-5 37 L2 39 Z" fill="#FFFFFF" />
+                <path d="M0 42 L-3 46 L3 44 Z" fill="#E0E0E0" />
+                {/* Wings */}
+                <path d="M9 42 L5 50 L18 50 L14 42 Z" fill="#E0E0E0" />
+                <path d="M9 42 L6 35 L16 35 L14 42 Z" fill="#FFFFFF" />
+                {/* Engine */}
+                <ellipse cx="10" cy="48" rx="2" ry="1.2" fill="#BDC3C7" />
+                {/* Windows */}
+                <circle cx="18" cy="41.5" r="0.9" fill="#3498DB" />
+                <circle cx="15" cy="41.5" r="0.9" fill="#3498DB" />
+                <circle cx="12" cy="41.5" r="0.9" fill="#3498DB" />
+                <circle cx="9" cy="41.5" r="0.9" fill="#3498DB" />
+                {/* Accent stripe */}
+                <line x1="2" y1="42" x2="20" y2="42" stroke="#E74C3C" strokeWidth="0.6" />
+            </motion.g>
+
+            {/* Floating tickets - foreground */}
+            <motion.g
+                className="parallax-foreground"
+                initial={{ y: 0, rotate: -8 }}
+                animate={{ y: [-6, 4, -6], rotate: [-8, 5, -8] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+                {/* Ticket 1 */}
+                <rect x="8" y="55" width="18" height="10" rx="1.5" fill="#FFFFFF" />
+                <rect x="8" y="55" width="5" height="10" rx="1.5" fill="#E74C3C" />
+                <circle cx="20" cy="60" r="2" fill="#3498DB" opacity="0.5" />
+                <line x1="14" y1="58" x2="24" y2="58" stroke="#E0E0E0" strokeWidth="0.5" />
+                <line x1="14" y1="61" x2="22" y2="61" stroke="#E0E0E0" strokeWidth="0.5" />
+            </motion.g>
+
+            <motion.g
+                initial={{ y: 0, rotate: 12 }}
+                animate={{ y: [-4, 6, -4], rotate: [12, 3, 12] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            >
+                {/* Ticket 2 */}
+                <rect x="72" y="52" width="20" height="11" rx="1.5" fill="#FFFFFF" />
+                <rect x="72" y="52" width="6" height="11" rx="1.5" fill="#2ECC71" />
+                <circle cx="85" cy="57" r="2.5" fill="#F1C40F" opacity="0.5" />
+                <line x1="80" y1="55" x2="90" y2="55" stroke="#E0E0E0" strokeWidth="0.5" />
+                <line x1="80" y1="59" x2="88" y2="59" stroke="#E0E0E0" strokeWidth="0.5" />
+            </motion.g>
+        </svg>
+    </div>
+);
+
+// ==========================================
+// SCREEN 3: SETTLEMENT THEME - FULLSCREEN
+// ==========================================
+const SettlementIllustration = () => (
+    <div className="illustration-fullscreen">
+        <svg viewBox="0 0 100 100" className="onboarding-svg-fullscreen" preserveAspectRatio="xMidYMid slice">
+            {/* Background decorative elements - SLOW PARALLAX */}
+            <motion.g
+                className="parallax-background"
+                initial={{ y: 0 }}
+                animate={{ y: [-1.5, 1.5, -1.5] }}
+                transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+            >
+                {/* Soft circles */}
+                <circle cx="10" cy="25" r="12" fill="white" opacity="0.08" />
+                <circle cx="90" cy="20" r="15" fill="white" opacity="0.06" />
+                <circle cx="85" cy="75" r="10" fill="white" opacity="0.1" />
+                <circle cx="8" cy="80" r="8" fill="white" opacity="0.08" />
+            </motion.g>
+
+            {/* Table surface - ground plane */}
+            <ellipse cx="50" cy="85" rx="45" ry="12" fill="rgba(0,0,0,0.15)" />
+            <path d="M10 78 Q50 85 90 78 L90 82 Q50 88 10 82 Z" fill="#8B4513" opacity="0.4" />
+
+            {/* Middle layer - MEDIUM PARALLAX */}
+            <motion.g
+                className="parallax-middle"
+                initial={{ y: 0 }}
+                animate={{ y: [-1, 1, -1] }}
+                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            >
+                {/* Shared food plate - left */}
+                <motion.g
+                    initial={{ scale: 0.97 }}
+                    animate={{ scale: [0.97, 1.01, 0.97] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                >
+                    {/* Plate */}
+                    <ellipse cx="30" cy="62" rx="18" ry="9" fill="#FFFFFF" />
+                    <ellipse cx="30" cy="62" rx="15" ry="7.5" fill="#F5F5F5" />
+                    {/* Food items on plate */}
+                    <ellipse cx="25" cy="60" rx="4" ry="2.5" fill="#E74C3C" />
+                    <ellipse cx="33" cy="59" rx="3.5" ry="2" fill="#F39C12" />
+                    <ellipse cx="28" cy="64" rx="3" ry="1.8" fill="#27AE60" />
+                    <ellipse cx="35" cy="63" rx="2.8" ry="1.5" fill="#9B59B6" />
+                </motion.g>
+
+                {/* Shared bowl - right */}
+                <motion.g
+                    initial={{ scale: 0.98 }}
+                    animate={{ scale: [0.98, 1.02, 0.98] }}
+                    transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+                >
+                    {/* Bowl */}
+                    <ellipse cx="70" cy="65" rx="14" ry="7" fill="#FFFFFF" />
+                    <ellipse cx="70" cy="64" rx="12" ry="6" fill="#F5F5F5" />
+                    {/* Salad items */}
+                    <ellipse cx="67" cy="62" rx="3" ry="1.5" fill="#27AE60" />
+                    <ellipse cx="72" cy="63" rx="2.5" ry="1.3" fill="#E74C3C" />
+                    <ellipse cx="70" cy="61" rx="2" ry="1" fill="#F1C40F" />
+                </motion.g>
+            </motion.g>
+
+            {/* Foreground - FAST PARALLAX - Main success checkmark */}
+            <motion.g
+                className="parallax-foreground"
+                initial={{ scale: 0.95, y: 0 }}
+                animate={{ scale: [0.95, 1.02, 0.95], y: [-2, 2, -2] }}
+                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            >
+                {/* Glow effect */}
+                <motion.circle
+                    cx="50" cy="40"
+                    r="22"
+                    fill="#2ECC71"
+                    opacity="0.2"
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.35, 0.2] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                />
+                {/* Main badge */}
+                <circle cx="50" cy="40" r="16" fill="#2ECC71" />
+                <circle cx="50" cy="40" r="14" fill="#27AE60" />
+                {/* Animated checkmark */}
+                <motion.path
+                    d="M42 40 L47 45 L58 34"
+                    stroke="white"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                />
+            </motion.g>
+
+            {/* Floating coins around settlement badge */}
+            <motion.g
+                initial={{ y: 0, rotate: 0 }}
+                animate={{ y: [-6, 4, -6], rotate: [0, 10, 0] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+                <circle cx="22" cy="35" r="4" fill="#FFD700" stroke="#DAA520" strokeWidth="0.5" />
+                <text x="20.5" y="37" fontSize="3" fill="#DAA520" fontWeight="bold">₹</text>
+            </motion.g>
+
+            <motion.g
+                initial={{ y: 0, rotate: 0 }}
+                animate={{ y: [-4, 6, -4], rotate: [0, -12, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+            >
+                <circle cx="78" cy="32" r="4.5" fill="#FFD700" stroke="#DAA520" strokeWidth="0.5" />
+                <text x="76.5" y="34" fontSize="3.5" fill="#DAA520" fontWeight="bold">₹</text>
+            </motion.g>
+
+            <motion.g
+                initial={{ y: 0, rotate: 5 }}
+                animate={{ y: [-5, 5, -5], rotate: [5, -5, 5] }}
+                transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
+            >
+                <circle cx="38" cy="18" r="3.5" fill="#FFD700" stroke="#DAA520" strokeWidth="0.5" />
+                <text x="36.8" y="20" fontSize="2.8" fill="#DAA520" fontWeight="bold">₹</text>
+            </motion.g>
+
+            <motion.g
+                initial={{ y: 0, rotate: -3 }}
+                animate={{ y: [-3, 5, -3], rotate: [-3, 8, -3] }}
+                transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            >
+                <circle cx="62" cy="15" r="3" fill="#FFD700" stroke="#DAA520" strokeWidth="0.4" />
+                <text x="60.8" y="17" fontSize="2.5" fill="#DAA520" fontWeight="bold">₹</text>
+            </motion.g>
+
+            {/* Rising celebration particles */}
+            {[...Array(8)].map((_, i) => (
+                <motion.circle
+                    key={i}
+                    cx={25 + i * 7}
+                    cy={95}
+                    r={1.5}
+                    fill={['#3498DB', '#2ECC71', '#E74C3C', '#F1C40F', '#9B59B6', '#1ABC9C', '#FF6B6B', '#4ECDC4'][i]}
+                    initial={{ y: 0, opacity: 0.9 }}
+                    animate={{
+                        y: [-25 - i * 5, 0],
+                        opacity: [0.9, 0]
+                    }}
+                    transition={{
+                        duration: 2.5,
+                        repeat: Infinity,
+                        delay: i * 0.25,
+                        ease: "easeOut"
+                    }}
+                />
+            ))}
+        </svg>
+    </div>
 );
 
 const illustrations = {
-    beach: BeachIllustration,
     food: FoodIllustration,
-    sky: SkyIllustration
+    travel: TravelIllustration,
+    settlement: SettlementIllustration
 };
 
 function Onboarding({ onComplete }) {
@@ -450,94 +542,166 @@ function Onboarding({ onComplete }) {
         handleComplete();
     };
 
+    // Enhanced slide variants with smoother easing
     const slideVariants = {
         enter: (direction) => ({
-            x: direction > 0 ? 300 : -300,
-            opacity: 0
+            x: direction > 0 ? '60%' : '-60%',
+            opacity: 0,
+            scale: 0.96
         }),
         center: {
             x: 0,
-            opacity: 1
+            opacity: 1,
+            scale: 1
         },
         exit: (direction) => ({
-            x: direction > 0 ? -300 : 300,
-            opacity: 0
+            x: direction > 0 ? '-60%' : '60%',
+            opacity: 0,
+            scale: 0.96
         })
+    };
+
+    // Background gradient animation
+    const backgroundVariants = {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 }
     };
 
     const CurrentIllustration = illustrations[screens[currentScreen].illustration];
 
     return (
-        <div className="onboarding-container" style={{ background: screens[currentScreen].gradient }}>
-            {/* Skip Button */}
-            <button className="onboarding-skip" onClick={handleSkip}>
-                Skip
-            </button>
-
-            {/* Content */}
-            <AnimatePresence mode="wait" custom={direction}>
+        <motion.div
+            className="onboarding-container-fullscreen"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+        >
+            {/* Animated gradient background */}
+            <AnimatePresence mode="wait">
                 <motion.div
-                    key={currentScreen}
-                    custom={direction}
-                    variants={slideVariants}
-                    initial="enter"
-                    animate="center"
+                    key={`bg-${currentScreen}`}
+                    className="onboarding-gradient-bg"
+                    style={{ background: screens[currentScreen].gradient }}
+                    variants={backgroundVariants}
+                    initial="initial"
+                    animate="animate"
                     exit="exit"
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="onboarding-content"
-                >
-                    {/* Illustration with parallax background */}
-                    <motion.div
-                        className="onboarding-illustration-wrapper"
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.2, duration: 0.5 }}
-                    >
-                        <CurrentIllustration />
-                    </motion.div>
-
-                    {/* Text Content */}
-                    <motion.div
-                        className="onboarding-text"
-                        initial={{ y: 30, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.3, duration: 0.5 }}
-                    >
-                        <h1>{screens[currentScreen].title}</h1>
-                        <p>{screens[currentScreen].subtitle}</p>
-                    </motion.div>
-                </motion.div>
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                />
             </AnimatePresence>
 
-            {/* Navigation */}
-            <div className="onboarding-navigation">
-                {/* Dots */}
-                <div className="onboarding-dots">
+            {/* Skip Button */}
+            <motion.button
+                className="onboarding-skip-premium"
+                onClick={handleSkip}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.4 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+            >
+                Skip
+            </motion.button>
+
+            {/* Main Content Area - Full Screen */}
+            <div className="onboarding-main-content">
+                <AnimatePresence mode="wait" custom={direction}>
+                    <motion.div
+                        key={currentScreen}
+                        custom={direction}
+                        variants={slideVariants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={{
+                            duration: 0.8,
+                            ease: [0.4, 0, 0.2, 1],
+                            scale: { duration: 0.8, ease: [0.4, 0, 0.2, 1] }
+                        }}
+                        className="onboarding-slide"
+                    >
+                        {/* Illustration */}
+                        <motion.div
+                            className="onboarding-illustration-fullscreen"
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{
+                                delay: 0.15,
+                                duration: 1,
+                                ease: [0.4, 0, 0.2, 1]
+                            }}
+                        >
+                            <CurrentIllustration />
+                        </motion.div>
+
+                        {/* Text Content */}
+                        <motion.div
+                            className="onboarding-text-overlay"
+                            initial={{ y: 30, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{
+                                delay: 0.35,
+                                duration: 0.9,
+                                ease: [0.4, 0, 0.2, 1]
+                            }}
+                        >
+                            <h1>{screens[currentScreen].title}</h1>
+                            <p>{screens[currentScreen].subtitle}</p>
+                        </motion.div>
+                    </motion.div>
+                </AnimatePresence>
+            </div>
+
+            {/* Bottom Navigation */}
+            <motion.div
+                className="onboarding-nav-premium"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7, duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
+            >
+                {/* Pagination Dots */}
+                <div className="onboarding-dots-premium">
                     {screens.map((_, index) => (
-                        <button
+                        <motion.button
                             key={index}
-                            className={`onboarding-dot ${index === currentScreen ? 'active' : ''}`}
+                            className={`onboarding-dot-premium ${index === currentScreen ? 'active' : ''}`}
                             onClick={() => {
                                 setDirection(index > currentScreen ? 1 : -1);
                                 setCurrentScreen(index);
                             }}
+                            whileHover={{ scale: 1.15 }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}
                         />
                     ))}
                 </div>
 
-                {/* Navigation Buttons */}
-                <div className="onboarding-buttons">
+                {/* Action Buttons */}
+                <div className="onboarding-buttons-premium">
                     {currentScreen > 0 && (
-                        <button className="onboarding-btn secondary" onClick={handlePrev}>
+                        <motion.button
+                            className="onboarding-btn-premium secondary"
+                            onClick={handlePrev}
+                            whileHover={{ scale: 1.01 }}
+                            whileTap={{ scale: 0.99 }}
+                            transition={{ duration: 0.3 }}
+                        >
                             Back
-                        </button>
+                        </motion.button>
                     )}
-                    <button className="onboarding-btn primary" onClick={handleNext}>
+                    <motion.button
+                        className="onboarding-btn-premium primary"
+                        onClick={handleNext}
+                        whileHover={{ scale: 1.01, y: -1 }}
+                        whileTap={{ scale: 0.99 }}
+                        transition={{ duration: 0.3 }}
+                    >
                         {currentScreen === screens.length - 1 ? "Get Started" : "Next"}
-                    </button>
+                    </motion.button>
                 </div>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 }
 

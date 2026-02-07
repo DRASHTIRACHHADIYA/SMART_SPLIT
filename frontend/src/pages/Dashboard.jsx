@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Sidebar from "../components/Sidebar";
 import GroupList from "../components/GroupList";
 import ExpenseList from "../components/ExpenseList";
@@ -47,36 +47,36 @@ function Dashboard() {
   /* =========================
      CALCULATE TOTALS
      ========================= */
-  const calculateTotals = (balances) => {
-  const token = localStorage.getItem("token");
-  if (!token) return;
+  const calculateTotals = useCallback((balances) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
-  const payload = JSON.parse(atob(token.split(".")[1]));
-  const currentUserId = payload.id;
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const currentUserId = payload.id;
 
-  // 1️⃣ TOTAL EXPENSES (avoid double count + round)
-  let total = 0;
-  Object.values(balances).forEach((amt) => {
-    total += Math.abs(amt);
-  });
+    // 1️⃣ TOTAL EXPENSES (avoid double count + round)
+    let total = 0;
+    Object.values(balances).forEach((amt) => {
+      total += Math.abs(amt);
+    });
 
-  setTotalExpenses(Number((total / 2).toFixed(2)));
+    setTotalExpenses(Number((total / 2).toFixed(2)));
 
-  // 2️⃣ MY BALANCE
-  const myBalance = balances[currentUserId] || 0;
+    // 2️⃣ MY BALANCE
+    const myBalance = balances[currentUserId] || 0;
 
-  // 3️⃣ YOU OWE / YOU ARE OWED (rounded)
-  if (myBalance > 0) {
-    setYouAreOwed(Number(myBalance.toFixed(2)));
-    setYouOwe(0);
-  } else if (myBalance < 0) {
-    setYouOwe(Number(Math.abs(myBalance).toFixed(2)));
-    setYouAreOwed(0);
-  } else {
-    setYouOwe(0);
-    setYouAreOwed(0);
-  }
-};
+    // 3️⃣ YOU OWE / YOU ARE OWED (rounded)
+    if (myBalance > 0) {
+      setYouAreOwed(Number(myBalance.toFixed(2)));
+      setYouOwe(0);
+    } else if (myBalance < 0) {
+      setYouOwe(Number(Math.abs(myBalance).toFixed(2)));
+      setYouAreOwed(0);
+    } else {
+      setYouOwe(0);
+      setYouAreOwed(0);
+    }
+  }, []);
 
 
 
@@ -125,16 +125,16 @@ function Dashboard() {
         />
 
         {/* ADD MEMBER (IMPORTANT STEP) */}
-       <AddMember
-         groupId={selectedGroupId}
-         onMemberAdded={fetchGroups}
+        <AddMember
+          groupId={selectedGroupId}
+          onMemberAdded={fetchGroups}
         />
 
 
         {/* ADD EXPENSE */}
         <AddExpense
           groupId={selectedGroupId}
-          onExpenseAdded={() => {}}
+          onExpenseAdded={() => { }}
         />
 
         {/* EXPENSE HISTORY */}

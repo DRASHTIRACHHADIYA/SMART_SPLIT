@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import api from "../api/api";
 import SplitSelector from "../components/SplitSelector";
@@ -183,7 +183,8 @@ function GroupDetail() {
         setSplitData(data);
     }, []);
 
-    const getAllParticipants = () => {
+    // Memoize participants to prevent infinite re-render loop in SplitSelector
+    const allParticipants = useMemo(() => {
         const participants = [];
 
         // Active members
@@ -209,7 +210,7 @@ function GroupDetail() {
             });
 
         return participants;
-    };
+    }, [group?.members, group?.pendingMembers]);
 
     const toggleParticipant = (participant) => {
         setSelectedParticipants((prev) => {
@@ -864,7 +865,7 @@ function GroupDetail() {
                                     <label>Split between</label>
                                     {expenseAmount && parseFloat(expenseAmount) > 0 ? (
                                         <SplitSelector
-                                            participants={getAllParticipants()}
+                                            participants={allParticipants}
                                             totalAmount={parseFloat(expenseAmount) || 0}
                                             onSplitChange={handleSplitChange}
                                             initialMode="equal"

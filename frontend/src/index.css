@@ -2176,43 +2176,455 @@ select {
 }
 
 /* =========================
-   ONBOARDING COMPONENT
+   PREMIUM FULLSCREEN ONBOARDING
 ========================= */
+
+/* Main container - TRUE FULLSCREEN */
+.onboarding-container-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 9999;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Animated gradient background layer */
+.onboarding-gradient-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* Constrained content wrapper for proper scaling */
+.onboarding-content-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 4vw, 48px);
+}
+
+/* Skip button - refined, subtle */
+.onboarding-skip-premium {
+  position: absolute;
+  top: clamp(24px, 3vh, 36px);
+  right: clamp(24px, 3vw, 48px);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  z-index: 100;
+  letter-spacing: 0.02em;
+  transition: all 0.4s ease;
+}
+
+.onboarding-skip-premium:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+}
+
+/* Main content area - centered with max-width */
+.onboarding-main-content {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  overflow: hidden;
+  padding: clamp(60px, 8vh, 100px) clamp(24px, 4vw, 48px);
+}
+
+/* Individual slide - constrained layout */
+.onboarding-slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: clamp(40px, 6vh, 80px);
+}
+
+/* Illustration wrapper - constrained size */
+.onboarding-illustration-fullscreen {
+  position: relative;
+  width: clamp(280px, 50%, 550px);
+  height: clamp(200px, 45vh, 400px);
+  max-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  margin-bottom: clamp(24px, 4vh, 48px);
+}
+
+/* The inner illustration container - anchored */
+.illustration-fullscreen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* SVG properly scaled within container */
+.onboarding-svg-fullscreen {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Parallax layer base styles - smoother */
+.parallax-background {
+  will-change: transform;
+  opacity: 0.9;
+}
+
+.parallax-middle {
+  will-change: transform;
+}
+
+.parallax-foreground {
+  will-change: transform;
+}
+
+/* Text overlay - proper spacing below illustration */
+.onboarding-text-overlay {
+  position: relative;
+  text-align: center;
+  color: white;
+  z-index: 10;
+  width: 100%;
+  max-width: 600px;
+  padding: 0 24px;
+}
+
+.onboarding-text-overlay h1 {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 500;
+  margin-bottom: clamp(8px, 1.5vh, 16px);
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
+  line-height: 1.2;
+  color: white;
+}
+
+.onboarding-text-overlay p {
+  font-size: clamp(14px, 2vw, 17px);
+  line-height: 1.6;
+  opacity: 0.8;
+  font-weight: 400;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+  max-width: 480px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Bottom navigation - refined */
+.onboarding-nav-premium {
+  position: relative;
+  z-index: 20;
+  padding: clamp(20px, 3vh, 32px) clamp(24px, 4vw, 48px);
+  padding-bottom: clamp(28px, 4vh, 44px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(16px, 2.5vh, 24px);
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.15) 0%, transparent 100%);
+}
+
+/* Pagination dots - smaller, refined */
+.onboarding-dots-premium {
+  display: flex;
+  gap: clamp(10px, 1.5vw, 14px);
+}
+
+.onboarding-dot-premium {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  border: none;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  padding: 0;
+}
+
+.onboarding-dot-premium.active {
+  background: white;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+  transform: scale(1.2);
+}
+
+.onboarding-dot-premium:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+/* Action buttons - refined, calm styling */
+.onboarding-buttons-premium {
+  display: flex;
+  gap: clamp(10px, 1.5vw, 16px);
+  width: 100%;
+  max-width: 380px;
+}
+
+.onboarding-btn-premium {
+  flex: 1;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  letter-spacing: 0;
+  transition: all 0.4s ease;
+}
+
+.onboarding-btn-premium.primary {
+  background: white;
+  color: #1e293b;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.onboarding-btn-premium.primary:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+.onboarding-btn-premium.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.onboarding-btn-premium.secondary:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+======================================== */
+
+/* Mobile - Portrait */
+@media (max-width: 480px) {
+  .onboarding-skip-premium {
+    top: 16px;
+    right: 16px;
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  .onboarding-illustration-fullscreen {
+    width: 85%;
+    height: 35vh;
+    margin-bottom: 20px;
+  }
+
+  .onboarding-text-overlay {
+    padding: 0 16px;
+  }
+
+  .onboarding-text-overlay h1 {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  .onboarding-text-overlay p {
+    font-size: 14px;
+  }
+
+  .onboarding-nav-premium {
+    padding: 16px 16px 24px;
+    gap: 14px;
+  }
+
+  .onboarding-btn-premium {
+    padding: 11px 20px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+
+  .onboarding-dot-premium {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* Mobile - Landscape */
+@media (max-height: 500px) and (orientation: landscape) {
+  .onboarding-slide {
+    padding-top: 20px;
+  }
+
+  .onboarding-illustration-fullscreen {
+    height: 40vh;
+    margin-bottom: 16px;
+  }
+
+  .onboarding-text-overlay h1 {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  .onboarding-text-overlay p {
+    font-size: 13px;
+  }
+
+  .onboarding-nav-premium {
+    padding: 10px 20px 16px;
+    gap: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .onboarding-buttons-premium {
+    max-width: 280px;
+  }
+
+  .onboarding-btn-premium {
+    padding: 10px 18px;
+    font-size: 13px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .onboarding-illustration-fullscreen {
+    width: 55%;
+    height: 40vh;
+  }
+
+  .onboarding-text-overlay h1 {
+    font-size: clamp(26px, 4vw, 32px);
+  }
+
+  .onboarding-text-overlay p {
+    font-size: clamp(15px, 2vw, 17px);
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1400px) {
+  .onboarding-illustration-fullscreen {
+    width: 500px;
+    height: 380px;
+  }
+
+  .onboarding-text-overlay h1 {
+    font-size: 38px;
+  }
+
+  .onboarding-text-overlay p {
+    font-size: 18px;
+  }
+
+  .onboarding-btn-premium {
+    padding: 14px 32px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+
+  .onboarding-dot-premium {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* Ultra-wide screens */
+@media (min-width: 2000px) {
+  .onboarding-text-overlay {
+    max-width: 700px;
+  }
+
+  .onboarding-text-overlay h1 {
+    font-size: 42px;
+  }
+
+  .onboarding-text-overlay p {
+    font-size: 30px;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+
+  .onboarding-container-fullscreen,
+  .onboarding-gradient-bg,
+  .onboarding-slide,
+  .onboarding-illustration-fullscreen,
+  .parallax-background,
+  .parallax-middle,
+  .parallax-foreground {
+    animation: none !important;
+    transition: opacity 0.3s ease !important;
+  }
+}
+
+/* Legacy support - keep old classes functional */
 .onboarding-container {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   z-index: 9999;
   overflow: hidden;
-  transition: background 0.5s ease;
+  transition: background 0.6s ease;
 }
 
 .onboarding-skip {
   position: absolute;
-  top: 24px;
-  right: 24px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  top: clamp(16px, 4vh, 32px);
+  right: clamp(16px, 4vw, 32px);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: white;
-  padding: 10px 20px;
-  border-radius: 24px;
+  padding: 12px 24px;
+  border-radius: 30px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
-}
-
-.onboarding-skip:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.05);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .onboarding-content {
@@ -2222,133 +2634,117 @@ select {
   justify-content: center;
   flex: 1;
   width: 100%;
-  max-width: 500px;
-  padding: 40px;
+  padding: clamp(20px, 5vh, 60px) clamp(16px, 5vw, 40px);
+  position: relative;
 }
 
 .onboarding-illustration-wrapper {
-  width: 100%;
-  max-width: 400px;
-  margin-bottom: 40px;
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
+  width: clamp(280px, 85vw, 700px);
+  height: clamp(200px, 50vh, 450px);
+  margin-bottom: clamp(20px, 4vh, 50px);
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.25));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .onboarding-illustration {
   width: 100%;
-  height: auto;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 
 .onboarding-text {
   text-align: center;
   color: white;
+  max-width: clamp(300px, 80vw, 600px);
+  position: relative;
+  z-index: 5;
 }
 
 .onboarding-text h1 {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  letter-spacing: -0.02em;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  font-size: clamp(28px, 6vw, 48px);
+  font-weight: 800;
+  margin-bottom: clamp(12px, 2vh, 20px);
+  letter-spacing: -0.03em;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  line-height: 1.15;
 }
 
 .onboarding-text p {
-  font-size: 18px;
+  font-size: clamp(16px, 3vw, 22px);
   line-height: 1.6;
-  opacity: 0.9;
-  max-width: 400px;
+  opacity: 0.92;
+  font-weight: 400;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .onboarding-navigation {
-  padding: 40px;
+  padding: clamp(20px, 4vh, 40px) clamp(16px, 5vw, 40px);
+  padding-bottom: clamp(24px, 5vh, 48px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: clamp(16px, 3vh, 28px);
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.15), transparent);
 }
 
 .onboarding-dots {
   display: flex;
-  gap: 12px;
+  gap: clamp(10px, 2vw, 16px);
 }
 
 .onboarding-dot {
-  width: 10px;
-  height: 10px;
+  width: clamp(10px, 1.5vw, 14px);
+  height: clamp(10px, 1.5vw, 14px);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.35);
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
 }
 
 .onboarding-dot.active {
   background: white;
-  transform: scale(1.2);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
-.onboarding-dot:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.6);
+  transform: scale(1.3);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.3);
 }
 
 .onboarding-buttons {
   display: flex;
-  gap: 12px;
+  gap: clamp(10px, 2vw, 16px);
   width: 100%;
 }
 
 .onboarding-btn {
   flex: 1;
-  padding: 16px 32px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: clamp(14px, 2vh, 18px) clamp(24px, 4vw, 40px);
+  border-radius: 16px;
+  font-size: clamp(15px, 2vw, 18px);
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
 }
 
 .onboarding-btn.primary {
   background: white;
   color: #1e293b;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-.onboarding-btn.primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .onboarding-btn.secondary {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   color: white;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.onboarding-btn.secondary:hover {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-@media (max-width: 600px) {
-  .onboarding-content {
-    padding: 20px;
-  }
-
-  .onboarding-text h1 {
-    font-size: 26px;
-  }
-
-  .onboarding-text p {
-    font-size: 16px;
-  }
-
-  .onboarding-navigation {
-    padding: 20px;
-  }
 }
 
 /* =========================
