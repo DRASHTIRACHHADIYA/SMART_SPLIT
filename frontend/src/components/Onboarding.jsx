@@ -503,13 +503,14 @@ const illustrations = {
 
 function Onboarding({ onComplete }) {
     const [currentScreen, setCurrentScreen] = useState(0);
-    const [direction, setDirection] = useState(1);
+    // Track slide direction: 1 = forward (right to left), -1 = backward (left to right)
+    const [slideDirection, setSlideDirection] = useState(1);
 
     useEffect(() => {
         // Auto-advance every 5 seconds
         const timer = setInterval(() => {
             if (currentScreen < screens.length - 1) {
-                setDirection(1);
+                setSlideDirection(1);
                 setCurrentScreen(prev => prev + 1);
             }
         }, 5000);
@@ -519,7 +520,7 @@ function Onboarding({ onComplete }) {
 
     const handleNext = () => {
         if (currentScreen < screens.length - 1) {
-            setDirection(1);
+            setSlideDirection(1);
             setCurrentScreen(prev => prev + 1);
         } else {
             handleComplete();
@@ -528,7 +529,7 @@ function Onboarding({ onComplete }) {
 
     const handlePrev = () => {
         if (currentScreen > 0) {
-            setDirection(-1);
+            setSlideDirection(-1);
             setCurrentScreen(prev => prev - 1);
         }
     };
@@ -542,31 +543,40 @@ function Onboarding({ onComplete }) {
         handleComplete();
     };
 
-    // Enhanced slide variants with smoother easing
+    // Horizontal slide animation variants
+    // Slides enter from right (100%) and exit to left (-100%) when going forward
+    // Reverse when going backward
     const slideVariants = {
         enter: (direction) => ({
-            x: direction > 0 ? '60%' : '-60%',
-            opacity: 0,
-            scale: 0.96
+            x: direction > 0 ? '100%' : '-100%',
+            opacity: 0
         }),
         center: {
             x: 0,
-            opacity: 1,
-            scale: 1
+            opacity: 1
         },
         exit: (direction) => ({
-            x: direction > 0 ? '-60%' : '60%',
-            opacity: 0,
-            scale: 0.96
+            x: direction > 0 ? '-100%' : '100%',
+            opacity: 0
         })
     };
 
-    // Background gradient animation
-    const backgroundVariants = {
-        initial: { opacity: 0 },
-        animate: { opacity: 1 },
-        exit: { opacity: 0 }
+    // Smooth spring-based transition for natural mobile feel
+    const slideTransition = {
+        x: {
+            type: "spring",
+            stiffness: 300,
+            damping: 30,
+            duration: 0.5
+        },
+        opacity: {
+            duration: 0.4,
+            ease: [0.4, 0, 0.2, 1]
+        }
     };
+
+    // Smooth easing for gradient background
+    const smoothEasing = [0.4, 0, 0.2, 1];
 
     const CurrentIllustration = illustrations[screens[currentScreen].illustration];
 
@@ -577,19 +587,12 @@ function Onboarding({ onComplete }) {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
-            {/* Animated gradient background */}
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={`bg-${currentScreen}`}
-                    className="onboarding-gradient-bg"
-                    style={{ background: screens[currentScreen].gradient }}
-                    variants={backgroundVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    transition={{ duration: 0.8, ease: "easeInOut" }}
-                />
-            </AnimatePresence>
+            {/* Persistent gradient background with CSS transition */}
+            <motion.div
+                className="onboarding-gradient-bg"
+                animate={{ background: screens[currentScreen].gradient }}
+                transition={{ duration: 0.6, ease: smoothEasing }}
+            />
 
             {/* Skip Button */}
             <motion.button
@@ -606,49 +609,27 @@ function Onboarding({ onComplete }) {
 
             {/* Main Content Area - Full Screen */}
             <div className="onboarding-main-content">
-                <AnimatePresence mode="wait" custom={direction}>
+                <AnimatePresence initial={false} mode="popLayout" custom={slideDirection}>
                     <motion.div
                         key={currentScreen}
-                        custom={direction}
+                        custom={slideDirection}
                         variants={slideVariants}
                         initial="enter"
                         animate="center"
                         exit="exit"
-                        transition={{
-                            duration: 0.8,
-                            ease: [0.4, 0, 0.2, 1],
-                            scale: { duration: 0.8, ease: [0.4, 0, 0.2, 1] }
-                        }}
+                        transition={slideTransition}
                         className="onboarding-slide"
                     >
                         {/* Illustration */}
-                        <motion.div
-                            className="onboarding-illustration-fullscreen"
-                            initial={{ scale: 0.95, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{
-                                delay: 0.15,
-                                duration: 1,
-                                ease: [0.4, 0, 0.2, 1]
-                            }}
-                        >
+                        <div className="onboarding-illustration-fullscreen">
                             <CurrentIllustration />
-                        </motion.div>
+                        </div>
 
                         {/* Text Content */}
-                        <motion.div
-                            className="onboarding-text-overlay"
-                            initial={{ y: 30, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{
-                                delay: 0.35,
-                                duration: 0.9,
-                                ease: [0.4, 0, 0.2, 1]
-                            }}
-                        >
+                        <div className="onboarding-text-overlay">
                             <h1>{screens[currentScreen].title}</h1>
                             <p>{screens[currentScreen].subtitle}</p>
-                        </motion.div>
+                        </div>
                     </motion.div>
                 </AnimatePresence>
             </div>
@@ -667,7 +648,7 @@ function Onboarding({ onComplete }) {
                             key={index}
                             className={`onboarding-dot-premium ${index === currentScreen ? 'active' : ''}`}
                             onClick={() => {
-                                setDirection(index > currentScreen ? 1 : -1);
+                                setSlideDirection(index > currentScreen ? 1 : -1);
                                 setCurrentScreen(index);
                             }}
                             whileHover={{ scale: 1.15 }}
