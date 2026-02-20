@@ -17,7 +17,8 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/groups", require("./routes/groupRoutes"));
 app.use("/api/expenses", require("./routes/expenseRoutes"));
 app.use("/api/activities", require("./routes/activityRoutes"));
-// app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/credit", require("./routes/creditRoutes"));
+app.use("/api/settlements", require("./routes/settlementRoutes"));
 
 // Test route
 app.get("/", (req, res) => {

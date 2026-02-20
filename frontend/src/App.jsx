@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Groups from "./pages/Groups";
 import GroupDetail from "./pages/GroupDetail";
 import Profile from "./pages/Profile";
+import About from "./pages/About";
 import PrivateRoute from "./routes/PrivateRoute.jsx";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
@@ -31,6 +32,7 @@ function App() {
               <Route path="/groups" element={<Groups />} />
               <Route path="/groups/:groupId" element={<GroupDetail />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/about" element={<About />} />
 
               {/* Redirect old dashboard to new home */}
               <Route path="/dashboard" element={<Navigate to="/home" replace />} />

@@ -71,6 +71,7 @@ function AppLayout() {
         { path: "/home", icon: "🏠", label: "Home" },
         { path: "/groups", icon: "👥", label: "Groups" },
         { path: "/profile", icon: "👤", label: "Profile" },
+        { path: "/about", icon: "ℹ️", label: "About Us" },
     ];
 
     // Handle onboarding completion

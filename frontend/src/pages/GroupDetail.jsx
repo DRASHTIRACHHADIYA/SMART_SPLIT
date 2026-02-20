@@ -6,6 +6,7 @@ import ActivityFeed from "../components/ActivityFeed";
 import ExpenseChart from "../components/ExpenseChart";
 import CategoryChart from "../components/CategoryChart";
 import ErrorBoundary from "../components/ErrorBoundary";
+import SettleUpModal from "../components/SettleUpModal";
 import { useNotifications } from "../contexts/NotificationContext";
 import { detectCategory, getCategoryLabel, getCategoryEmoji } from "../utils/categoryDetector";
 
@@ -48,6 +49,9 @@ function GroupDetail() {
 
     // Auto-detected category suggestion
     const [suggestedCategory, setSuggestedCategory] = useState(null);
+
+    // Settle Up modal state
+    const [settleTarget, setSettleTarget] = useState(null);
 
     // Auto-detect category when expense title changes
     const handleTitleChange = (value) => {
@@ -675,36 +679,43 @@ function GroupDetail() {
                                             </span>
                                             <span className="settlement-name">{s.to?.name}</span>
                                         </div>
-                                        <button
-                                            className="reminder-btn"
-                                            onClick={() => {
-                                                addNotification({
-                                                    type: 'reminder',
-                                                    message: `Payment reminder: ${s.from?.name} owes ₹${s.amount} to ${s.to?.name}`,
-                                                    priority: 'high',
-                                                    showToast: true
-                                                });
-                                                showToast({
-                                                    type: 'success',
-                                                    message: 'Reminder sent!',
-                                                    duration: 3000
-                                                });
-                                            }}
-                                            style={{
-                                                marginTop: '12px',
-                                                padding: '8px 16px',
-                                                background: 'var(--primary-light)',
-                                                color: 'var(--primary)',
-                                                border: 'none',
-                                                borderRadius: 'var(--radius-sm)',
-                                                fontSize: '13px',
-                                                fontWeight: 500,
-                                                cursor: 'pointer',
-                                                transition: 'all 0.2s'
-                                            }}
-                                        >
-                                            ⏰ Send Reminder
-                                        </button>
+                                        <div style={{ display: 'flex', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
+                                            <button
+                                                className="settle-up-btn"
+                                                onClick={() => setSettleTarget(s)}
+                                            >
+                                                💸 Settle Up
+                                            </button>
+                                            <button
+                                                className="reminder-btn"
+                                                onClick={() => {
+                                                    addNotification({
+                                                        type: 'reminder',
+                                                        message: `Payment reminder: ${s.from?.name} owes ₹${s.amount} to ${s.to?.name}`,
+                                                        priority: 'high',
+                                                        showToast: true
+                                                    });
+                                                    showToast({
+                                                        type: 'success',
+                                                        message: 'Reminder sent!',
+                                                        duration: 3000
+                                                    });
+                                                }}
+                                                style={{
+                                                    padding: '10px 16px',
+                                                    background: 'var(--primary-light)',
+                                                    color: 'var(--primary)',
+                                                    border: 'none',
+                                                    borderRadius: '10px',
+                                                    fontSize: '13px',
+                                                    fontWeight: 500,
+                                                    cursor: 'pointer',
+                                                    transition: 'all 0.2s'
+                                                }}
+                                            >
+                                                ⏰ Send Reminder
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -900,6 +911,19 @@ function GroupDetail() {
                         </ErrorBoundary>
                     </div>
                 </div>
+            )}
+
+            {/* SETTLE UP MODAL */}
+            {settleTarget && (
+                <SettleUpModal
+                    settlement={settleTarget}
+                    groupId={groupId}
+                    onClose={() => setSettleTarget(null)}
+                    onSuccess={() => {
+                        setSettleTarget(null);
+                        fetchGroupData();
+                    }}
+                />
             )}
         </div>
     );

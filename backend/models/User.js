@@ -47,6 +47,18 @@ const userSchema = new mongoose.Schema(
       default: "pending",
     },
 
+    // === CREDIT SCORE ===
+    creditScore: {
+      type: Number,
+      default: 750,
+      min: 300,
+      max: 900,
+    },
+    consecutiveOnTime: {
+      type: Number,
+      default: 0,
+    },
+
     // === METADATA ===
     lastLoginAt: Date,
   },

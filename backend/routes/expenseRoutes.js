@@ -3,8 +3,10 @@ const Expense = require("../models/Expense");
 const Group = require("../models/Group");
 const User = require("../models/User");
 const PendingMember = require("../models/PendingMember");
+const Settlement = require("../models/Settlement");
 const auth = require("../middleware/authMiddleware");
 const { logExpenseAdded, logExpenseDeleted } = require("../services/activityService");
+const { processSettlementCreditScore } = require("../services/creditScoreService");
 
 const router = express.Router();
 
@@ -256,6 +258,7 @@ router.get("/balance/:groupId", auth, async (req, res) => {
     }
 
     const expenses = await Expense.find({ groupId });
+    const completedSettlements = await Settlement.find({ groupId, status: "completed" });
 
     // Calculate balances for all participants
     const balanceMap = new Map();
@@ -281,7 +284,7 @@ router.get("/balance/:groupId", auth, async (req, res) => {
       });
     });
 
-    // Calculate balances
+    // Calculate balances from expenses
     expenses.forEach((expense) => {
       const payerId = expense.paidBy.toString();
 
@@ -300,6 +303,20 @@ router.get("/balance/:groupId", auth, async (req, res) => {
           );
         }
       });
+    });
+
+    // Apply completed settlements to balances
+    completedSettlements.forEach((s) => {
+      const fromId = s.fromUserId.toString();
+      const toId = s.toUserId.toString();
+      // Payer (debtor) gets balance increased (less debt)
+      if (balanceMap.has(fromId)) {
+        balanceMap.set(fromId, balanceMap.get(fromId) + s.amount);
+      }
+      // Payee (creditor) gets balance decreased (less owed to them)
+      if (balanceMap.has(toId)) {
+        balanceMap.set(toId, balanceMap.get(toId) - s.amount);
+      }
     });
 
     // Format response
@@ -372,8 +389,9 @@ router.get("/settlement/:groupId", auth, async (req, res) => {
     }
 
     const expenses = await Expense.find({ groupId });
+    const completedSettlements = await Settlement.find({ groupId, status: "completed" });
 
-    // Calculate balances (same logic as above)
+    // Calculate balances (same logic as balance route)
     const balanceMap = new Map();
     const participantInfo = new Map();
 
@@ -407,6 +425,18 @@ router.get("/settlement/:groupId", auth, async (req, res) => {
           );
         }
       });
+    });
+
+    // Apply completed settlements to balances
+    completedSettlements.forEach((s) => {
+      const fromId = s.fromUserId.toString();
+      const toId = s.toUserId.toString();
+      if (balanceMap.has(fromId)) {
+        balanceMap.set(fromId, balanceMap.get(fromId) + s.amount);
+      }
+      if (balanceMap.has(toId)) {
+        balanceMap.set(toId, balanceMap.get(toId) - s.amount);
+      }
     });
 
     // Separate active and pending users
@@ -531,6 +561,106 @@ router.delete("/:expenseId", auth, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to delete expense"
+    });
+  }
+});
+
+/* ============================
+   RECORD SETTLEMENT
+   Creates a Settlement record and triggers credit score update
+============================ */
+router.post("/record-settlement", auth, async (req, res) => {
+  try {
+    const { groupId, toUserId, amount, expenseId } = req.body;
+
+    // Validate required fields
+    if (!groupId || !toUserId || !amount) {
+      return res.status(400).json({
+        success: false,
+        message: "groupId, toUserId, and amount are required",
+      });
+    }
+
+    if (amount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Amount must be greater than 0",
+      });
+    }
+
+    // Cannot settle with yourself
+    if (req.user === toUserId || req.user.toString() === toUserId.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot settle with yourself",
+      });
+    }
+
+    // Verify group exists and user is a member
+    const group = await Group.findById(groupId);
+    if (!group || !group.members.includes(req.user)) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied",
+      });
+    }
+
+    // Calculate days delayed (from expense creation if provided, else 0)
+    let daysDelayed = 0;
+    if (expenseId) {
+      const expense = await Expense.findById(expenseId);
+      if (expense) {
+        const now = new Date();
+        const created = new Date(expense.createdAt);
+        daysDelayed = Math.floor((now - created) / (1000 * 60 * 60 * 24));
+      }
+    }
+
+    // Create settlement record
+    const settlement = new Settlement({
+      groupId,
+      fromUserId: req.user,
+      toUserId,
+      amount,
+      expenseId: expenseId || null,
+      status: "completed",
+      completedAt: new Date(),
+    });
+
+    await settlement.save();
+
+    // Trigger credit score update for the payer (debtor)
+    const creditResult = await processSettlementCreditScore(
+      req.user,
+      daysDelayed,
+      settlement._id.toString()
+    );
+
+    // Mark as processed
+    settlement.creditScoreProcessed = true;
+    await settlement.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Settlement recorded",
+      settlement: {
+        _id: settlement._id,
+        amount: settlement.amount,
+        completedAt: settlement.completedAt,
+      },
+      creditScore: {
+        oldScore: creditResult.oldScore,
+        newScore: creditResult.newScore,
+        change: creditResult.changeAmount,
+        reason: creditResult.reason,
+        bonusAwarded: creditResult.bonusAwarded || false,
+      },
+    });
+  } catch (error) {
+    console.error("Record settlement error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to record settlement",
     });
   }
 });
